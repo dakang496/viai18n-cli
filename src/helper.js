@@ -1,6 +1,5 @@
 const Fse = require('fs-extra');
 const Path = require('path');
-const config = require('./config');
 
 function traverse(dir, match, handler) {
   const stats = Fse.statSync(dir)
@@ -19,14 +18,6 @@ function traverse(dir, match, handler) {
       traverse(filePath, match, handler);
     }
   });
-}
-
-function pathToKey(path) {
-  return path.replace(config.fileRegx, '');
-}
-
-function keyToPath(key) {
-  return key + config.postfix;
 }
 
 function merge(source, update) {
@@ -72,8 +63,6 @@ function readFileSync(path) {
 
 module.exports = {
   traverse: traverse,
-  pathToKey: pathToKey,
-  keyToPath: keyToPath,
   merge: merge,
   isFileExist: isFileExist,
   readFileSync: readFileSync,
