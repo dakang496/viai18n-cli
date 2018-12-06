@@ -50,7 +50,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './build/index.html',
+      template: Path.resolve(__dirname, 'template.html'),
       inject: true,
       minify: {
         removeComments: true,
