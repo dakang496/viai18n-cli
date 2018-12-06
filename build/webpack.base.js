@@ -4,9 +4,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 function resolve(dir) {
   return Path.join(__dirname, '..', dir)
 }
+
+const postcssLoader = {
+  loader: 'postcss-loader',
+  options: {
+    config: {
+      path: Path.resolve(__dirname, '..'),
+    }
+  }
+};
 module.exports = {
   entry: {
-    app: './src/web/index.js',
+    app: Path.resolve(__dirname, '../src/web/index.js'),
   },
   output: {
     filename: 'main.js',
@@ -35,14 +44,14 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader',
-          'postcss-loader'
+          postcssLoader
         ],
       },
       {
         test: /\.scss$/,
         use: [
           'sass-loader',
-          'postcss-loader'
+          postcssLoader
         ]
       },
     ]
