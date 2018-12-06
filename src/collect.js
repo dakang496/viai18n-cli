@@ -31,7 +31,7 @@ module.exports = function (options) {
   Object.keys(data).forEach((lang) => {
     const content = JSON.stringify(data[lang], null, 2);
     Fse.outputFileSync(Path.resolve(options.localeDir, lang + '.json'), content);
-    Fse.outputFileSync(options.webLangDir + '/' + lang + '.json', content);
+    Fse.outputFileSync(Path.resolve(__dirname, '..', options.webLangDir, lang + '.json'), content);
   });
 }
 
