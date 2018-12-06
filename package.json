@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "collect":"node ./src/collect.js",
-    "part":"node ./src/part.js",
+    "collect": "node ./src/collect.js",
+    "part": "node ./src/part.js",
     "web-build": "node ./build/index.js",
     "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js"
   },
@@ -29,9 +29,7 @@
     "fs-extra": "^7.0.1",
     "node-sass": "^4.10.0",
     "sass-loader": "^7.1.0",
-    "vue": "^2.5.2"
-  },
-  "devDependencies": {
+    "vue": "^2.5.2",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
