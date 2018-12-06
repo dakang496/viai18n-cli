@@ -10,7 +10,7 @@ module.exports = {
   },
   output: {
     filename: 'main.js',
-    path: Path.resolve(__dirname, '../dist')
+    path: Path.resolve('viai18n-html')
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -47,7 +47,7 @@ module.exports = {
       },
     ]
   },
-  plugins:[
+  plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './build/index.html',

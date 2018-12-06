@@ -4,18 +4,60 @@
  * Module dependencies.
  */
 
-var program = require('commander');
+const program = require('commander');
+const path = require('path');
+
+const part = require('./src/part');
+const collect = require('./src/collect');
+const gen = require('./src/gen');
+
+function parseConfig(filename) {
+  const config = require(path.resolve(filename));
+  return {
+    ...config,
+    pageDir: path.resolve(config.pageDir),
+    localeDir: path.resolve(config.localeDir),
+    webLangDir:'./src/web/locale',
+  }
+}
+
+program.version('0.1.0');
+program.option('-c, --config [file]', 'setup profile', 'viai18n.config.js');
 
 program
-  .version('0.1.0')
-  .option('-p, --peppers', 'Add peppers')
-  .option('-P, --pineapple', 'Add pineapple')
-  .option('-b, --bbq-sauce', 'Add bbq sauce')
-  .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
-  .parse(process.argv);
+  .command('part')
+  .description('part locales')
+  .action(function () {
+    console.log('分散');
+    const config = parseConfig(program.config);
+    part(config);
+  });
 
-console.log('you ordered a pizza with:');
-if (program.peppers) console.log('  - peppers');
-if (program.pineapple) console.log('  - pineapple');
-if (program.bbqSauce) console.log('  - bbq');
-console.log('  - %s cheese', program.cheese);
+program
+  .command('collect')
+  .description('collect locales together')
+  .action(function () {
+    console.log('收集');
+    const config = parseConfig(program.config);
+    collect(config);
+  });
+
+program
+  .command('gen')
+  .description('generate html for editing')
+  .action(function () {
+    console.log('generate');
+    const config = parseConfig(program.config);
+    gen(config);
+  });
+program
+  .command('start')
+  .description('collect and generate')
+  .action(function () {
+    console.log('start');
+    const config = parseConfig(program.config);
+    collect(config);
+    gen(config);
+    console.log('end');
+  });
+program.parse(process.argv);
