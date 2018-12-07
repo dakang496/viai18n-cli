@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <div class="text-left">
-      {{lang}}
+    <!-- <div class="text-left header">
       <span>参考语言：</span>
       <b-form-radio-group
         class="baselang-box"
@@ -15,7 +14,7 @@
           :key="index"
         >{{item}}</b-form-radio>
       </b-form-radio-group>
-    </div>
+    </div> -->
 
     <b-tabs v-model="seletedTab">
       <b-tab
@@ -26,61 +25,91 @@
       </b-tab>
     </b-tabs>
 
+    <div class="op-bar d-flex">
+      <div class="d-flex lang-tip">
+        <p>Translate</p>
+        <b-form-select v-model="baseLang" :options="langs" class="mb-3" size="sm" />
+        <p>into</p>
+        <b-badge variant="primary">{{selectLang}}</b-badge>
+      </div>
+
+      <div class="flex"></div>
+      <b-button variant="success" @click="exportFile">Export</b-button>
+    </div>
+
     <div class="panel-content">
       <div
         class="file"
         v-for="(item,file) in seletedLocale"
         :key="file"
       >
-        <p class="title">{{file}}</p>
-        <div
-          class="d-flex"
-          v-for="(value,key) in item"
-          :key="key"
-        >
-          <span class="item-label">{{key}}</span>
-          <div class="item-text">
-            <p class="tip">{{originLocales[baseLang][file][key]}}</p>
-            <input
-              class="w-100"
-              v-model="editLocales[selectLang][file][key]"
-            >
+        <p class="title" v-b-toggle="file">{{file}}</p>
+        <b-collapse :id="file" visible>
+          <div
+            class="d-flex trans-box"
+            v-for="(value,key) in item"
+            :key="key"
+          >
+            <span class="item-label">{{key}}</span>
+            <div class="item-text">
+              <p class="tip">{{originLocales[baseLang][file][key]}}</p>
+              <b-form-textarea contenteditable
+                size="sm"
+                v-model="editLocales[selectLang][file][key]"
+              />
+            </div>
+
           </div>
-
-        </div>
-
+        </b-collapse>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import originLocales from './locale'
+import originLocales from "./locale";
 const langs = Object.keys(originLocales);
 export default {
-  name: 'App',
-  data(){
+  name: "App",
+  data() {
     return {
-      originLocales:originLocales,
-      editLocales:JSON.parse(JSON.stringify(originLocales)),
-      langs:langs,
-      baseLang:langs[0],
-      seletedTab:0,
-      lang:LANG_BASE
-    }
+      originLocales: originLocales,
+      editLocales: JSON.parse(JSON.stringify(originLocales)),
+      langs: langs,
+      baseLang: langs[0],
+      seletedTab: 0,
+      lang: LANG_BASE
+    };
   },
-  computed:{
-    selectLang(){
-      return this.langs[this.seletedTab]
+  computed: {
+    selectLang() {
+      return this.langs[this.seletedTab];
     },
-    seletedLocale(){
-      return this.editLocales[this.selectLang]
+    seletedLocale() {
+      return this.editLocales[this.selectLang];
     }
   },
 
-  mounted() {
-  },
-}
+  mounted() {},
+
+  methods: {
+    funDownload(content, filename) {
+      let eleLink = document.createElement("a");
+      eleLink.download = filename;
+      eleLink.style.display = "none";
+      let blob = new Blob([content]);
+      eleLink.href = URL.createObjectURL(blob);
+      document.body.appendChild(eleLink);
+      eleLink.click();
+      document.body.removeChild(eleLink);
+    },
+
+    exportFile() {
+      let content = JSON.stringify(this.editLocales[this.selectLang]);
+      this.funDownload(content, `${this.selectLang}.json`)
+    }
+  }
+};
 </script>
 
 <style lang="scss">
@@ -90,29 +119,97 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  padding-top: 20px;
+  .flex {
+    flex: 1;
+  }
+  p {
+    margin: 0;
+  }
+  .header {
+    padding: 20px;
+  }
+  .nav-tabs {
+    padding: 0 20px;
+  }
   .baselang-box {
     display: inline-block;
   }
+  .op-bar {
+    margin: 20px;
+    padding-bottom: 0;
+    border: 1px solid #ececec;
+    border-radius: 6px;
+    padding: 10px 0;
+    margin-bottom: 0;
+    background-color: #f3f3f3;
+
+    .lang-tip {
+      line-height: 30px;
+      height: 30px;
+
+      p {
+        margin: 0 10px;
+      }
+      .badge-primary {
+        color: #fff;
+        background-color: #007bff;
+        line-height: 25px;
+        font-size: 16px;
+      }
+    }
+
+    .btn-success {
+      height: 26px;
+      line-height: 26px;
+      padding-top: 0;
+      margin-top: 2px;
+      margin-right: 20px;
+    }
+  }
   .panel-content {
-    padding: 10px;
+    padding: 20px;
+
     .file {
-      padding-bottom: 10px;
-      border-bottom: 1px solid gray;
       text-align: left;
+      border: 1px solid #ececec;
+      border-radius: 6px;
+      margin-bottom: 10px;
+
+      .trans-box:last-child {
+        border-bottom: 0px;
+      }
     }
     .title {
       font-size: 16px;
       font-weight: 500;
+      line-height: 30px;
+      background-color: #f3f3f3;
+      padding: 0 10px;
+      margin-bottom: 0;
     }
-    .item-label {
-      padding-top: 24px;
-      min-width: 100px;
-    }
-    .item-text {
-      .tip {
-        padding: 0;
-        margin: 0;
-        height: 24px;
+    .trans-box {
+      padding: 10px;
+      border-bottom: 1px solid #ececec;
+      .item-label {
+        width: 80px;
+        min-width: 80px;
+        word-break: break-all;
+        margin-right: 20px;
+        color: #666;
+        font-size: 15px;
+      }
+      .item-text {
+        flex: 1;
+        .tip {
+          padding: 0;
+          margin: 0;
+          color: #333;
+        }
+
+        textarea {
+          height: inherit;
+        }
       }
     }
   }
