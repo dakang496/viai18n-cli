@@ -250,6 +250,7 @@ export default {
 
         textarea {
           height: inherit;
+          margin-top: 5px;
         }
       }
     }
