@@ -36,7 +36,7 @@
       </div>
 
       <div class="flex"></div>
-      <b-button variant="success" @click="exportFile">Export</b-button>
+      <b-button style="margin-top: 2px;margin-right: 20px;" variant="success" @click="exportFile">Export</b-button>
     </div>
 
     <div class="panel-content">
@@ -189,14 +189,11 @@ export default {
         font-size: 16px;
       }
     }
-
-    .btn-success {
-      height: 26px;
-      line-height: 26px;
-      padding-top: 0;
-      margin-top: 2px;
-      margin-right: 20px;
-    }
+  }
+  .btn-success {
+    height: 26px;
+    line-height: 26px;
+    padding-top: 0;
   }
   .panel-content {
     padding: 20px;
