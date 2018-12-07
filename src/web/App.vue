@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+
+    <div class="alert alert-warning" role="alert">After the translation is completed, please click the <b-button variant="success" @click="exportFile">Export</b-button> button and send the downloaded file to your colleagues</div>
     <!-- <div class="text-left header">
       <span>参考语言：</span>
       <b-form-radio-group
@@ -149,7 +151,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  padding-top: 20px;
   .flex {
     flex: 1;
   }
