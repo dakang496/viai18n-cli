@@ -43,7 +43,12 @@
         v-for="(item,file) in seletedLocale"
         :key="file"
       >
-        <p class="title" v-b-toggle="file">{{file}}</p>
+        <div class="title d-flex" :class="getPending(file)===0?'finished':''" v-b-toggle="file">
+          <div><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>{{file}}</div>
+          <div class="flex"></div>
+          <div class="cal-tip" v-if=" getPending(file) > 0"><span>Pending </span><b-badge variant="warning">{{getPending(file)}}</b-badge></div>
+          <div class="cal-tip" v-if=" getPending(file) < 0"><span>Pending </span><b-badge variant="warning">Unknow</b-badge></div>
+        </div>
         <b-collapse :id="file" visible>
           <div
             class="d-flex trans-box"
@@ -107,6 +112,31 @@ export default {
     exportFile() {
       let content = JSON.stringify(this.editLocales[this.selectLang]);
       this.funDownload(content, `${this.selectLang}.json`)
+    },
+
+    getPending(page) {
+      let total = 0;
+      try {
+        let pageData = this.editLocales[this.selectLang][page];
+        let originPageData = this.originLocales[this.lang][page];
+
+        for(let field in pageData) {
+          if(this.selectLang === this.lang) {
+            if(pageData[field] !== originPageData[field]) {
+              total ++;
+            }
+          } else {
+            if(pageData[field] === originPageData[field]) {
+              total ++;
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        total = -1;
+      }
+
+      return total;
     }
   }
 };
@@ -187,6 +217,17 @@ export default {
       background-color: #f3f3f3;
       padding: 0 10px;
       margin-bottom: 0;
+      overflow: hidden;
+      .cal-tip {
+        span {
+          color: #666;
+          font-size: 14px;
+        }
+      }
+
+      &.finished {
+        background-color: #c9ffb0;
+      }
     }
     .trans-box {
       padding: 10px;
