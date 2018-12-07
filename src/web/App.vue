@@ -110,7 +110,7 @@ export default {
     },
 
     exportFile() {
-      let content = JSON.stringify(this.editLocales[this.selectLang]);
+      let content = JSON.stringify(this.editLocales[this.selectLang], null, 4);
       this.funDownload(content, `${this.selectLang}.json`)
     },
 
