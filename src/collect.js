@@ -6,32 +6,40 @@ const Path = require('path');
 const helper = require('./helper');
 
 
-function pathToKey(path, options) {
-  return path.replace(options.fileRegx, '');
-}
-
 module.exports = function (options) {
   const data = {}
+  const entry = options.entry;
+  const fileRegx = options.fileRegx;
+  const langExclude = options.lang.exclude || [];
 
-  helper.traverse(options.pageDir, options.fileRegx, function (filePath, content) {
-    const relativePath = Path.relative(options.pageDir, filePath);
-    const key = pathToKey(relativePath, options);
-    content = JSON.parse(content);
+  Object.keys(entry).forEach((name) => {
+    const dirPath = entry[name];
+    helper.traverse(dirPath, fileRegx, function (filePath, content) {
+      const relativePath = Path.relative(dirPath, filePath);
+      const key = name + '/' + relativePath.replace(fileRegx, '');
 
-    Object.keys(content).forEach((lang) => {
-      const src = content[lang];
-      const langData = data[lang] = (data[lang] || {});
-      const dist = langData[key] = (langData[key] || {})
-      Object.keys(src).forEach((key) => {
-        dist[key] = src[key];
+      content = JSON.parse(content);
+      Object.keys(content).forEach((lang) => {
+        // 无效的语言
+        if (langExclude.indexOf(lang) !== -1) {
+          return;
+        }
+        const src = content[lang];
+        const langData = data[lang] = (data[lang] || {});
+        const dist = langData[key] = (langData[key] || {})
+        Object.keys(src).forEach((key) => {
+          dist[key] = src[key];
+        });
       });
     });
   });
 
   Object.keys(data).forEach((lang) => {
-    const content = JSON.stringify(data[lang], null, 2);
-    Fse.outputFileSync(Path.resolve(options.localeDir, lang + '.json'), content);
-    Fse.outputFileSync(Path.resolve(__dirname, '..', options.webLangDir, lang + '.json'), content);
+    const content = JSON.stringify(data[lang], null, 4);
+    if (options.output.locale) {
+      Fse.outputFileSync(Path.resolve(options.output.locale, lang + '.json'), content);
+    }
+    Fse.outputFileSync(Path.resolve(__dirname, '..', options.webLocale, lang + '.json'), content);
   });
 }
 

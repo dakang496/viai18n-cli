@@ -5,15 +5,11 @@ const Fse = require('fs-extra');
 const Path = require('path');
 const helper = require('./helper');
 
-function keyToPath(key, options) {
-  return key + options.postfix;
-}
-
-
 module.exports = function (options) {
   const data = {}
+  const localeDir = options.output.locale;
 
-  helper.traverse(options.localeDir, /.json$/, function (filePath, content) {
+  helper.traverse(localeDir, /.json$/, function (filePath, content) {
     content = JSON.parse(content);
     const lang = Path.basename(filePath, '.json');
 
@@ -26,20 +22,27 @@ module.exports = function (options) {
         langData[textKey] = srcFileData[textKey];
       });
     })
-  })
+  });
+
+  const entry = options.entry;
+  const postfix = options.postfix;
 
   Object.keys(data).forEach((fileKey) => {
-    const filePath = Path.resolve(options.pageDir, keyToPath(fileKey, options));
+    const splits = fileKey.split('/');
+    splits[0] = entry[splits[0]];
+    if (!splits[0]) {
+      console.error('not exist', fileKey);
+      return;
+    }
+    const filePath = splits.join('/') + postfix;
+
     const file = helper.readFileSync(filePath);
     const source = file ? JSON.parse(file) : {};
     const update = data[fileKey];
     helper.merge(source, update);
-    const content = JSON.stringify(source, null, 2)
+    const content = JSON.stringify(source, null, 4);
     Fse.outputFileSync(filePath, content);
   });
-
-  // const str = JSON.stringify(data, null, 2)
-  // console.log(str);
 }
 
 

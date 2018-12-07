@@ -1,18 +1,34 @@
 const webpack = require("webpack");
 const webpackProd = require('../build/webpack.prod');
-const path = require('path');
+const merge = require('webpack-merge');
 
 module.exports = function (options) {
-  if (options) {
-    const outputDir = options.outputDir || 'viai18n-html'
-    webpackProd.output.path = path.resolve(outputDir);
-  }
-  webpack(webpackProd, (err, stats) => {
-    if (err || stats.hasErrors()) {
-      // 在这里处理错误
-      console.error("出错啦");
+  const webpackConf = merge(webpackProd, {
+    output: {
+      path: options.output.html,
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        LANG_BASE: JSON.stringify(options.lang.base)
+      }),
+    ]
+  });
+
+  webpack(webpackConf, (err, stats) => {
+    if (err) {
+      console.error(err.stack || err);
+      if (err.details) {
+        console.error(err.details);
+      }
+      return;
     }
-    // 处理完成
-    // console.log("成功");
+    const info = stats.toJson();
+    if (stats.hasErrors()) {
+      console.error(info.errors);
+    }
+    if (stats.hasWarnings()) {
+      console.warn(info.warnings);
+    }
+
   });
 }

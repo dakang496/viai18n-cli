@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "collect": "node ./src/collect.js",
-    "part": "node ./src/part.js",
-    "web-build": "node ./build/index.js",
+    "collect": "node index.js collect",
+    "part": "node index.js part",
+    "web-build": "node index.js gen",
     "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js"
   },
   "bin": {

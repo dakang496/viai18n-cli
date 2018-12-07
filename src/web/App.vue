@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div class="text-left">
+      {{lang}}
       <span>参考语言：</span>
       <b-form-radio-group
         class="baselang-box"
@@ -65,6 +66,7 @@ export default {
       langs:langs,
       baseLang:langs[0],
       seletedTab:0,
+      lang:LANG_BASE
     }
   },
   computed:{
@@ -93,7 +95,7 @@ export default {
   }
   .panel-content {
     padding: 10px;
-    .file{
+    .file {
       padding-bottom: 10px;
       border-bottom: 1px solid gray;
       text-align: left;
