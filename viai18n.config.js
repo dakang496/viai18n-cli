@@ -1,7 +1,7 @@
 module.exports = {
   /** 从这些目录查询需要匹配的文件 */
   entry: {
-    pages: './example/pages/'
+    pages: './example/pages/',
   },
   output: {
     html: 'static/viai18n-html', // 页面资源输出目录
@@ -15,8 +15,9 @@ module.exports = {
     ]
   },
   /** 解析的相关配置 */
-  parse:{
-    connector:'_', // 连接符
+  parse: {
+    connector: '_', // 连接符
     postfix: '.messages.json', // 匹配的文件后缀
+    duplicate: true // 同名的key是否保留
   }
 }

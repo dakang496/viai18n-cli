@@ -5,23 +5,14 @@ const Fse = require('fs-extra');
 const Path = require('path');
 const helper = require('./helper');
 
-
-module.exports = function (options) {
-  const data = {}
+function optimize(data, options) {
   const entry = options.entry;
   const fileRegx = options._fileRegx;
   const langExclude = options.lang.exclude || [];
-  const parse = options.parse;
 
   Object.keys(entry).forEach((name) => {
     const dirPath = entry[name];
     helper.traverse(dirPath, fileRegx, function (filePath, content) {
-      const relativePath = Path.relative(dirPath, filePath);
-
-      // 构造key
-      const noSuffix = relativePath.replace(fileRegx, ''); // 去掉后缀
-      const key = name + parse.connector + noSuffix.split(Path.sep).join(parse.connector);
-
       content = JSON.parse(content);
       Object.keys(content).forEach((lang) => {
         // 无效的语言
@@ -30,13 +21,59 @@ module.exports = function (options) {
         }
         const src = content[lang];
         const langData = data[lang] = (data[lang] || {});
-        const dist = langData[key] = (langData[key] || {})
+        Object.keys(src).forEach((key) => {
+          langData[key] = src[key];
+        });
+      })
+    });
+  });
+  return data;
+}
+
+function optimizeDuplicate(data, options) {
+  const entry = options.entry;
+  const fileRegx = options._fileRegx;
+  const langExclude = options.lang.exclude || [];
+  const parse = options.parse;
+
+  Object.keys(entry).forEach((name) => {
+    const dirPath = entry[name];
+    helper.traverse(dirPath, fileRegx, function (filePath, content) {
+      content = JSON.parse(content);
+
+      const relativePath = Path.relative(dirPath, filePath);
+
+      // 构造key
+      const noSuffix = relativePath.replace(fileRegx, ''); // 去掉后缀
+      const langKey = name + parse.connector + noSuffix.split(Path.sep).join(parse.connector);
+
+      Object.keys(content).forEach((lang) => {
+        // 无效的语言
+        if (langExclude.indexOf(lang) !== -1) {
+          return;
+        }
+        const src = content[lang];
+        const langData = data[lang] = (data[lang] || {});
+        const dist = langData[langKey] = (langData[langKey] || {})
         Object.keys(src).forEach((key) => {
           dist[key] = src[key];
         });
       });
+
     });
   });
+
+  return data;
+}
+
+
+module.exports = function (options) {
+  const data = {}
+  if (options.parse.duplicate) {
+    optimizeDuplicate(data, options);
+  } else {
+    optimize(data, options);
+  }
 
   Object.keys(data).forEach((lang) => {
     const content = JSON.stringify(data[lang], null, 4);

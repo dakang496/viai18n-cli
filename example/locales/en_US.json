@@ -1,8 +1,8 @@
 {
     "pages_index": {
-        "key1": "zdken-value1"
+        "key1": "en-value1"
     },
     "pages_test_name": {
-        "key1": "kdzen-value100"
+        "namekey1": "en-value1"
     }
 }

@@ -17,3 +17,4 @@ const langs = Object.keys(originLocales);
 window.langs = langs;
 window.originLocales = JSON.parse(JSON.stringify(originLocales));
 window.langBase = LANG_BASE;
+window.parseDuplicate = PARSE_DUPLICATE;

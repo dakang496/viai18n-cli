@@ -1,8 +1,8 @@
 {
     "zh_Hans_CN": {
-        "key1": "zh-value1"
+        "namekey1": "zh-value1"
     },
     "en_US": {
-        "key1": "kdzen-value100"
+        "namekey1": "en-value1"
     }
 }

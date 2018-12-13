@@ -18,7 +18,8 @@ module.exports = merge(webpackBase, {
       'process.env': {
         NODE_ENV: '"development"'
       },
-      LANG_BASE: JSON.stringify(options.lang.base)
+      LANG_BASE: JSON.stringify(options.lang.base),
+      PARSE_DUPLICATE:JSON.stringify(options.parse.duplicate),
     }),
   ]
 })
