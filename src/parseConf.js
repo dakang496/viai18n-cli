@@ -1,6 +1,5 @@
 const path = require('path');
 const defaults = {
-  postfix: '.messages.json',
   entry: { //json文件来源目录
     pages: './pages/',
   },
@@ -12,7 +11,11 @@ const defaults = {
     base: 'zh_Hans_CN',
     exclude: []
   },
-  webLocale: './src/web/locale',
+  _webLocale: './src/web/locale',
+  parse:{
+    connector:'_', // 链接符
+    postfix: '.messages.json', // 匹配的文件后缀
+  }
 }
 module.exports = function (filename) {
   try {
@@ -29,8 +32,9 @@ module.exports = function (filename) {
       output[key] = path.resolve(output[key]);
     });
 
-    if (merge.postfix) {
-      merge.fileRegx = new RegExp(merge.postfix.replace(/\./g, '\\.') + '$');
+    const postfix = merge.parse && merge.parse.postfix;
+    if (postfix) {
+      merge._fileRegx = new RegExp(postfix.replace(/\./g, '\\.') + '$');
     }
     return merge;
   } catch (error) {

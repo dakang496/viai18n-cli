@@ -25,16 +25,16 @@ module.exports = function (options) {
   });
 
   const entry = options.entry;
-  const postfix = options.postfix;
+  const parse = options.parse;
 
   Object.keys(data).forEach((fileKey) => {
-    const splits = fileKey.split('/');
+    const splits = fileKey.split(parse.connector);
     splits[0] = entry[splits[0]];
     if (!splits[0]) {
-      console.error('not exist', fileKey);
+      console.error('not exist entry', fileKey);
       return;
     }
-    const filePath = splits.join('/') + postfix;
+    const filePath = splits.join(Path.sep) + parse.postfix;
 
     const file = helper.readFileSync(filePath);
     const source = file ? JSON.parse(file) : {};

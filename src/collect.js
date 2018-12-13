@@ -9,14 +9,18 @@ const helper = require('./helper');
 module.exports = function (options) {
   const data = {}
   const entry = options.entry;
-  const fileRegx = options.fileRegx;
+  const fileRegx = options._fileRegx;
   const langExclude = options.lang.exclude || [];
+  const parse = options.parse;
 
   Object.keys(entry).forEach((name) => {
     const dirPath = entry[name];
     helper.traverse(dirPath, fileRegx, function (filePath, content) {
       const relativePath = Path.relative(dirPath, filePath);
-      const key = name + '/' + relativePath.replace(fileRegx, '');
+
+      // 构造key
+      const noSuffix = relativePath.replace(fileRegx, ''); // 去掉后缀
+      const key = name + parse.connector + noSuffix.split(Path.sep).join(parse.connector);
 
       content = JSON.parse(content);
       Object.keys(content).forEach((lang) => {
@@ -39,7 +43,7 @@ module.exports = function (options) {
     if (options.output.locale) {
       Fse.outputFileSync(Path.resolve(options.output.locale, lang + '.json'), content);
     }
-    Fse.outputFileSync(Path.resolve(__dirname, '..', options.webLocale, lang + '.json'), content);
+    Fse.outputFileSync(Path.resolve(__dirname, '..', options._webLocale, lang + '.json'), content);
   });
 }
 
