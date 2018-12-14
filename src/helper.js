@@ -27,9 +27,9 @@ function merge(source, update) {
   for (let key in update) {
     if (update.hasOwnProperty(key)) {
       const type = typeof update[key];
-      if (type === 'string') {
+      if (type !== 'object') {
         source[key] = update[key];
-      } else if (type === 'object') {
+      } else {
         source[key] = merge(source[key], update[key]);
       }
     }
@@ -61,9 +61,16 @@ function readFileSync(path) {
   }
 }
 
+function fitRegx(str) {
+  return str.replace(/\./g, '\\.').replace(/\+/g, '\\+')
+    .replace(/\?/g, '\\?').replace(/\*/g, '\\*')
+    .replace(/\^/g, '\\^').replace(/\$/g, '\\$');
+}
+
 module.exports = {
   traverse: traverse,
   merge: merge,
   isFileExist: isFileExist,
   readFileSync: readFileSync,
+  fitRegx: fitRegx,
 }

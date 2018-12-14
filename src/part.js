@@ -67,8 +67,12 @@ function optimizeDuplicate(options) {
 
   const entry = options.entry;
   const parse = options.parse;
+  const keyPostfixRegx = parse.keyPostfix ? new RegExp(helper.fitRegx(parse.keyPostfix) + '$') : null;
 
   Object.keys(data).forEach((fileKey) => {
+    if (keyPostfixRegx) {
+      fileKey = fileKey.replace(keyPostfixRegx, '');
+    }
     const splits = fileKey.split(parse.connector);
     splits[0] = entry[splits[0]];
     if (!splits[0]) {

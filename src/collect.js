@@ -45,7 +45,7 @@ function optimizeDuplicate(data, options) {
 
       // 构造key
       const noSuffix = relativePath.replace(fileRegx, ''); // 去掉后缀
-      const langKey = name + parse.connector + noSuffix.split(Path.sep).join(parse.connector);
+      const langKey = name + parse.connector + noSuffix.split(Path.sep).join(parse.connector) + (parse.keyPostfix || '');
 
       Object.keys(content).forEach((lang) => {
         // 无效的语言

@@ -17,6 +17,8 @@ function createDefaults() {
     parse: {
       connector: '_', // 链接符
       postfix: '.messages.json', // 匹配的文件后缀
+      duplicate: false, // 同名的key是否保留
+      keyPostfix: '',
     }
   }
 };
@@ -37,7 +39,8 @@ module.exports = function (filename) {
 
     const postfix = merge.parse && merge.parse.postfix;
     if (postfix) {
-      merge._fileRegx = new RegExp(postfix.replace(/\./g, '\\.') + '$');
+      const regxStr = helper.fitRegx(postfix) + '$';
+      merge._fileRegx = new RegExp(regxStr);
     }
     return merge;
   } catch (error) {
