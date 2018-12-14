@@ -70,10 +70,11 @@ function optimizeDuplicate(options) {
   const keyPostfixRegx = parse.keyPostfix ? new RegExp(helper.fitRegx(parse.keyPostfix) + '$') : null;
 
   Object.keys(data).forEach((fileKey) => {
+    let fixedFileKey = fileKey;
     if (keyPostfixRegx) {
-      fileKey = fileKey.replace(keyPostfixRegx, '');
+      fixedFileKey = fileKey.replace(keyPostfixRegx, '');
     }
-    const splits = fileKey.split(parse.connector);
+    const splits = fixedFileKey.split(parse.connector);
     splits[0] = entry[splits[0]];
     if (!splits[0]) {
       console.error('not exist entry', fileKey);
@@ -84,8 +85,9 @@ function optimizeDuplicate(options) {
     const file = helper.readFileSync(filePath);
     const source = file ? JSON.parse(file) : {};
     const update = data[fileKey];
-    helper.merge(source, update);
-    const content = JSON.stringify(source, null, 4);
+
+    content = helper.merge(source, update);
+    content = JSON.stringify(source, null, 4);
     Fse.outputFileSync(filePath, content);
   });
 }
