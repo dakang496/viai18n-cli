@@ -1,8 +1,4 @@
 {
-    "pages_index": {
-        "key1": "en-value1"
-    },
-    "pages_test_name": {
-        "namekey1": "en-value1"
-    }
+    "key1": "en-value1",
+    "namekey1": "en-value1"
 }

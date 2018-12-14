@@ -13,8 +13,22 @@
 // })
 
 import originLocales from "./locale";
-const langs = Object.keys(originLocales);
-window.langs = langs;
-window.originLocales = JSON.parse(JSON.stringify(originLocales));
-window.langBase = LANG_BASE;
 window.parseDuplicate = PARSE_DUPLICATE;
+let curOrigin = {};
+if(!window.parseDuplicate) {
+    window.rootKey = "To be translated";
+
+    for(let field in originLocales) {
+        curOrigin[field] = {};
+        curOrigin[field][window.rootKey] = originLocales[field]
+    }
+} else {
+    curOrigin = originLocales;
+}
+
+const langs = Object.keys(curOrigin);
+window.langs = langs;
+window.originLocales = JSON.parse(JSON.stringify(curOrigin));
+window.langBase = LANG_BASE;
+
+

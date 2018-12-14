@@ -71,7 +71,7 @@
       font-size: 16px;
     }
 
-    #app .btn-success {
+    #app .btn-success, #app .btn-warning, #app .btn-primary {
       height: 26px;
       line-height: 26px;
       padding-top: 0;
@@ -107,7 +107,7 @@
       font-size: 14px;
     }
 
-    #app.finished {
+    #app .finished {
       background-color: #c9ffb0;
     }
 
@@ -146,7 +146,7 @@
   <div id="app">
 
     <div class="alert alert-warning" role="alert">After the translation is completed, please click the <b-button
-        variant="success" @click="exportFile">Export</b-button> button and send the downloaded file to your colleagues</div>
+        variant="success" @click="exportFile">Complete & Export</b-button> button and send the downloaded file to your colleagues</div>
     <!-- <div class="text-left header">
           <span>参考语言：</span>
           <b-form-radio-group
@@ -170,6 +170,16 @@
 
     <div class="op-bar d-flex">
       <div class="d-flex lang-tip">
+        <p>Load the translation file <span style="color: #666;font-size: 13px;">(If I have an unfinished translation)</span></p>
+      </div>
+      <input class="file" type="file" name="file" @change="handleFiles($event.target.files)" />
+      <div class="d-flex lang-tip">
+        <p v-if="msg">Load status: <span v-html="msg"></span></p>
+      </div>
+    </div>
+
+    <div class="op-bar d-flex">
+      <div class="d-flex lang-tip">
         <p>Translate</p>
         <b-form-select v-model="baseLang" :options="langs" class="mb-3" size="sm" />
       </div>
@@ -178,7 +188,9 @@
         <b-badge variant="primary">{{selectLang}}</b-badge>
       </div>
       <div class="flex"></div>
-      <b-button style="margin-top: 2px;margin-right: 20px;" variant="success" @click="exportFile">Export</b-button>
+      <div v-if="totalRemain > 0" style="line-height: 30px;margin-right: 10px;color: red;">Translation remains: <span>{{totalRemain}}</span></div>
+      <b-button style="margin-top: 2px;margin-right: 20px;" variant="primary" @click="exportFile(true)">Save</b-button>
+      <b-button style="margin-top: 2px;margin-right: 20px;" :variant="totalRemain?'warning':'success'" @click="exportFile">Complete & Export</b-button>
     </div>
 
     <div class="panel-content">
@@ -187,17 +199,17 @@
           <div><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>{{file}}</div>
           <div class="flex"></div>
           <div class="cal-tip" v-if=" getPending(file) > 0"><span>Pending </span>
-            <b-badge variant="warning">{{getPending(file)}}</b-badge>
+            <b-badge style="margin-left: 3px;" variant="warning">{{getPending(file)}}</b-badge>
           </div>
           <div class="cal-tip" v-if=" getPending(file) < 0"><span>Pending </span>
-            <b-badge variant="warning">Unknow</b-badge>
+            <b-badge style="margin-left: 3px;" variant="warning">Unknow</b-badge>
           </div>
         </div>
         <b-collapse :id="file" visible>
           <div class="d-flex trans-box" v-for="(value,key) in item" :key="key">
             <span class="item-label">{{key}}</span>
             <div class="item-text">
-              <p class="tip">{{originLocales[baseLang][file][key]}}</p>
+              <p class="tip">{{originLocales[baseLang][file] ? originLocales[baseLang][file][key]: ""}}</p>
               <b-form-textarea contenteditable size="sm" v-model="editLocales[selectLang][file][key]" />
             </div>
 
@@ -217,7 +229,8 @@
       langs: window.langs,
       baseLang: window.langs[0],
       seletedTab: 0,
-      lang: window.langBase
+      lang: window.langBase,
+      msg: "",
     },
     computed: {
       selectLang() {
@@ -225,10 +238,38 @@
       },
       seletedLocale() {
         return this.editLocales[this.selectLang];
+      },
+      totalRemain() {
+        var total = 0;
+        for (var field in this.seletedLocale) {
+          total += this.getPending(field);
+        }
+        return total;
       }
     },
     methods: {
-      funDownload: function(content, filename) {
+      handleFiles: function (files) {
+        if (files.length) {
+          var file = files[0];
+          var self = this;
+          var reader = new FileReader();
+          reader.readAsText(file);
+          reader.onload = function () {
+            try {
+              self.msg = '<span style="color: green;">Loaded successfully!</span>';
+              var jsonData = JSON.parse(this.result);
+              var jsonDataResult = {};
+              jsonDataResult[window.rootKey] = jsonData;
+              self.editLocales[self.selectLang] = window.parseDuplicate ?
+                jsonData :
+                jsonDataResult;
+            } catch {
+              self.msg = '<span style="color: red;">Failed to load!</span>';
+            }
+          }
+        }
+      },
+      funDownload: function (content, filename) {
         var eleLink = document.createElement("a");
         eleLink.download = filename;
         eleLink.style.display = "none";
@@ -239,24 +280,42 @@
         document.body.removeChild(eleLink);
       },
 
-      exportFile: function() {
-        var content = JSON.stringify(this.editLocales[this.selectLang], null, 4);
-        this.funDownload(content, this.selectLang+ ".json")
+      addZero(num) {
+        return num >= 10 ? num : ("0" + num);
       },
 
-      getPending: function(page) {
+      exportFile: function (isSave) {
+        var time = new Date();
+        var timeStr = "-" + this.addZero(time.getMonth() + 1) + "" + this.addZero(time.getDate());
+        var content = !window.parseDuplicate ?
+          JSON.stringify(this.editLocales[this.selectLang][window.rootKey], null, 4) :
+          JSON.stringify(this.editLocales[this.selectLang], null, 4);
+        if(isSave !== true) {
+          timeStr += "-ok";
+        } else {
+          timeStr += "-unfinished";
+        }
+        this.funDownload(content, this.selectLang + timeStr + ".json")
+      },
+
+      getPending: function (page) {
         var total = 0;
         try {
           var pageData = this.editLocales[this.selectLang][page];
           var originPageData = this.originLocales[this.lang][page];
 
+          if (!pageData || !originPageData) {
+            this.msg = '<span style="color: red;">File not matched</span>';
+            return 0;
+          }
+
           for (var field in pageData) {
             if (this.selectLang === this.lang) {
-              if (pageData[field] !== originPageData[field]) {
+              if (pageData[field] !== originPageData[field] || !pageData[field]) {
                 total++;
               }
             } else {
-              if (pageData[field] === originPageData[field]) {
+              if (pageData[field] === originPageData[field] || !pageData[field]) {
                 total++;
               }
             }
@@ -270,6 +329,12 @@
       }
     }
   })
+</script>
+
+<script>
+  window.onbeforeunload = function() { 
+    return "Are you sure to leave the current page? Unsaved data will be lost!";
+  }
 </script>
 
 </html>

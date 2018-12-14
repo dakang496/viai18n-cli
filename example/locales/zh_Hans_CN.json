@@ -1,8 +1,4 @@
 {
-    "pages_index": {
-        "key1": "zh-value1"
-    },
-    "pages_test_name": {
-        "namekey1": "zh-value1"
-    }
+    "key1": "zh-value1",
+    "namekey1": "zh-value1"
 }
