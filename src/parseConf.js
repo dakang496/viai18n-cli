@@ -1,26 +1,29 @@
 const path = require('path');
-const defaults = {
-  entry: { //json文件来源目录
-    pages: './pages/',
-  },
-  output: {
-    html: 'static/viai18n-html',
-    locale: './locales/',
-  },
-  lang: {
-    base: 'zh_Hans_CN',
-    exclude: []
-  },
-  _webLocale: './src/web/locale',
-  parse:{
-    connector:'_', // 链接符
-    postfix: '.messages.json', // 匹配的文件后缀
+const helper = require('./helper');
+function createDefaults() {
+  return {
+    entry: { //json文件来源目录
+      pages: './pages/',
+    },
+    output: {
+      html: 'static/viai18n-html',
+      locale: './locales/',
+    },
+    lang: {
+      base: 'zh_Hans_CN',
+      exclude: []
+    },
+    _webLocale: './src/web/locale',
+    parse: {
+      connector: '_', // 链接符
+      postfix: '.messages.json', // 匹配的文件后缀
+    }
   }
-}
+};
 module.exports = function (filename) {
   try {
     const custom = filename ? require(path.resolve(filename)) : {};
-    const merge = Object.assign({}, defaults, custom);
+    const merge = helper.merge(createDefaults(), custom);
 
     const entry = merge.entry;
     Object.keys(entry).forEach((key) => {
