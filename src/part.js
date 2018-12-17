@@ -55,13 +55,15 @@ function optimizeDuplicate(options) {
     const lang = Path.basename(filePath, '.json');
 
     Object.keys(content).forEach((fileKey) => {
-      const fileData = data[fileKey] = data[fileKey] || {};
-      const langData = fileData[lang] = fileData[lang] || {};
-
       const srcFileData = content[fileKey];
-      Object.keys(srcFileData).forEach((textKey) => {
-        langData[textKey] = srcFileData[textKey];
-      });
+      const srcKeys = Object.keys(srcFileData);      
+      if (srcKeys && srcKeys.length > 0) {
+        const fileData = data[fileKey] = data[fileKey] || {};
+        const langData = fileData[lang] = fileData[lang] || {};
+        srcKeys.forEach((textKey) => {
+          langData[textKey] = srcFileData[textKey];
+        });
+      }
     })
   });
 
