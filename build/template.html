@@ -359,6 +359,35 @@
         }
 
         return total;
+      },
+
+      expandTansObject(transObj) {
+        var newObj = {};
+        for(var field in transObj) {
+          newObj[field] = {};
+          this.expandObject(newObj[field], transObj[field]);
+        }
+        var result = JSON.stringify(newObj, null, 4);
+        this.funDownload(result, "global.messages.json");
+      },
+
+      expandObject(targetObj, originObj, preFieldArr) {
+        var seprator = "@@@";
+        for(var field in originObj) {
+          if(typeof originObj[field] === "string") {
+            var newField = field;
+            if(preFieldArr && preFieldArr.length > 0) {
+              var newFieldArr = preFieldArr.concat();
+              newFieldArr.push(field);
+              newField = newFieldArr.join(seprator);
+            }
+            targetObj[newField] = originObj[field];
+          } else {
+            var newFieldArr = (preFieldArr || []).concat();
+            newFieldArr.push(field);
+            this.expandObject(targetObj, originObj[field], newFieldArr);
+          }
+        }
       }
     }
   })
