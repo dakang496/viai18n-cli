@@ -5,20 +5,20 @@ function resolve(dir) {
   return Path.join(__dirname, '..', dir)
 }
 
-const postcssLoader = {
-  loader: 'postcss-loader',
-  options: {
-    config: {
-      path: Path.resolve(__dirname, '..'),
-    }
-  }
-};
+// const postcssLoader = {
+//   loader: 'postcss-loader',
+//   options: {
+//     config: {
+//       path: Path.resolve(__dirname, '..'),
+//     }
+//   }
+// };
 module.exports = {
   entry: {
     app: Path.resolve(__dirname, '../src/web/index.js'),
   },
   output: {
-    filename: 'main.js',
+    filename: '[name].js',
     path: Path.resolve('viai18n-html')
   },
   resolve: {
@@ -30,30 +30,30 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-      },
+      // {
+      //   test: /\.vue$/,
+      //   loader: 'vue-loader',
+      // },
       {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src/web'), resolve('node_modules/webpack-dev-server/client')]
       },
-      {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          postcssLoader
-        ],
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          'sass-loader',
-          postcssLoader
-        ]
-      },
+      // {
+      //   test: /\.css$/,
+      //   use: [
+      //     'vue-style-loader',
+      //     'css-loader',
+      //     postcssLoader
+      //   ],
+      // },
+      // {
+      //   test: /\.scss$/,
+      //   use: [
+      //     'sass-loader',
+      //     postcssLoader
+      //   ]
+      // },
     ]
   },
   plugins: [

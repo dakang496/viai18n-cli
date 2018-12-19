@@ -7,11 +7,12 @@ const options = parseConf('viai18n.config.js');
 
 module.exports = merge(webpackBase, {
   devServer: {
-    clientLogLevel: 'warning',
-    hot: true,
-    compress: true,
-    port: '9987',
-    open: true,
+    inline: true,
+    hot: true, // 启用 webpack 的模块热替换特性
+    open: true, // 启用 open 后，dev server 会打开浏览器
+    stats: {
+      colors: true
+    },
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -21,5 +22,6 @@ module.exports = merge(webpackBase, {
       LANG_BASE: JSON.stringify(options.lang.base),
       PARSE_DUPLICATE:JSON.stringify(options.parse.duplicate),
     }),
+    new webpack.HotModuleReplacementPlugin()
   ]
 })

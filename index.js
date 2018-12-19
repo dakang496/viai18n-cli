@@ -10,6 +10,7 @@ const path = require('path');
 const part = require('./src/part');
 const collect = require('./src/collect');
 const gen = require('./src/gen');
+const dev = require('./src/dev');
 const parseConf = require('./src/parseConf');
 
 program.version('0.1.0');
@@ -41,6 +42,16 @@ program
     const config = parseConf(program.config);
     gen(config);
   });
+
+program
+  .command('dev')
+  .description('for dev')
+  .action(function () {
+    console.log('dev');
+    const config = parseConf(program.config);
+    dev(config);
+  });
+
 program
   .command('start')
   .description('collect and generate')
