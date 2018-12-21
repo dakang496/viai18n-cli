@@ -20,6 +20,23 @@ function traverse(dir, match, handler) {
   });
 }
 
+function extractSame(base, source, result = {}) {
+  for (var key in source) {
+    const sourceValue = source[key];
+    const baseValue = base[key];
+    const sourceType = typeof sourceValue;
+    const baseType = typeof baseValue;
+    if (sourceType === 'object' && baseType === 'object') {
+      result[key] = extractSame(baseValue, sourceValue, result[key]);
+    } else if (sourceType === 'string' && baseType === 'string') {
+      if (sourceValue === baseValue) {
+        result[key] = sourceValue;
+      }
+    }
+  }
+  return result;
+}
+
 function merge(source, update) {
   if (!source || !update) {
     return source || update || {};
@@ -67,10 +84,24 @@ function fitRegx(str) {
     .replace(/\^/g, '\\^').replace(/\$/g, '\\$');
 }
 
+function sortObjectByKey(unordered) {
+  const ordered = {};
+  Object.keys(unordered).sort().forEach(function (key) {
+    if (typeof unordered[key] === 'string') {
+      ordered[key] = unordered[key];
+    } else {
+      ordered[key] = sortObjectByKey(unordered[key]);
+    }
+  });
+  return ordered
+}
+
 module.exports = {
   traverse: traverse,
   merge: merge,
   isFileExist: isFileExist,
   readFileSync: readFileSync,
   fitRegx: fitRegx,
+  sortObjectByKey: sortObjectByKey,
+  extractSame: extractSame,
 }

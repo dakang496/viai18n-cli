@@ -95,7 +95,7 @@ function optimizeDuplicate(options) {
 }
 
 module.exports = function (options) {
-  if (options.parse.duplicate) {
+  if (options.filter.textKeyDuplicate) {
     optimizeDuplicate(options);
   } else {
     optimize(options);

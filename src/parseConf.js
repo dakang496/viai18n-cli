@@ -17,8 +17,15 @@ function createDefaults() {
     parse: {
       connector: '_', // 链接符
       postfix: '.messages.json', // 匹配的文件后缀
-      duplicate: false, // 同名的key是否保留
       keyPostfix: '',
+    },
+    filter: {
+      translated: true, // 是否过滤掉已经翻译过的
+      textKeyDuplicate: true,
+      file: [
+      ],
+      textKey: [
+      ],
     }
   }
 };

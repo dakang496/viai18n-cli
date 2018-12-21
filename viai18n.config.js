@@ -18,6 +18,14 @@ module.exports = {
   parse: {
     connector: '_', // 连接符
     postfix: '.messages.json', // 匹配的文件后缀
-    duplicate: false // 同名的key是否保留
+  },
+  /** 过滤的配置 */
+  filter: {
+    textKeyDuplicate: true,
+    translated: false, // 是否过滤掉已经翻译过的
+    file: [
+    ],
+    textKey: [
+    ],
   }
 }
