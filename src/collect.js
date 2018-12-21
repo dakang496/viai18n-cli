@@ -47,9 +47,9 @@ function optimize(data, options) {
           return;
         }
         const src = content[lang];
-        const langData = data[lang] = (data[lang] || {});
         Object.keys(src).forEach((key) => {
           if (!isFilterTextKey(options.filter.textKey, key)) {
+            const langData = data[lang] = (data[lang] || {});
             langData[key] = src[key];
           }
         });
@@ -87,9 +87,9 @@ function optimizeDuplicate(data, options) {
         }
         const src = content[lang];
         const langData = data[lang] = (data[lang] || {});
-        const dist = langData[langKey] = (langData[langKey] || {})
         Object.keys(src).forEach((key) => {
           if (!isFilterTextKey(options.filter.textKey, key)) {
+            const dist = langData[langKey] = (langData[langKey] || {})
             dist[key] = src[key];
           }
         });
