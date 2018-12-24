@@ -20,21 +20,25 @@ function traverse(dir, match, handler) {
   });
 }
 
-function extractSame(base, source, result = {}) {
+function extractSame(base, source) {
+  const result = {}
   for (var key in source) {
     const sourceValue = source[key];
     const baseValue = base[key];
     const sourceType = typeof sourceValue;
     const baseType = typeof baseValue;
     if (sourceType === 'object' && baseType === 'object') {
-      result[key] = extractSame(baseValue, sourceValue, result[key]);
+      const obj = extractSame(baseValue, sourceValue);
+      if(obj){
+        result[key] = obj;
+      }
     } else if (sourceType === 'string' && baseType === 'string') {
       if (sourceValue === baseValue) {
         result[key] = sourceValue;
       }
     }
   }
-  return result;
+  return Object.keys(result).length !== 0 ? result : undefined;
 }
 
 function merge(source, update) {

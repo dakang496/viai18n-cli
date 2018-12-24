@@ -47,9 +47,9 @@ function optimize(data, options) {
           return;
         }
         const src = content[lang];
+        const langData = data[lang] = (data[lang] || {});
         Object.keys(src).forEach((key) => {
           if (!isFilterTextKey(options.filter.textKey, key)) {
-            const langData = data[lang] = (data[lang] || {});
             langData[key] = src[key];
           }
         });
@@ -79,7 +79,6 @@ function optimizeDuplicate(data, options) {
       // 构造key
       const noSuffix = relativePath.replace(fileRegx, ''); // 去掉后缀
       const langKey = name + parse.connector + noSuffix.split(Path.sep).join(parse.connector) + (parse.keyPostfix || '');
-
       Object.keys(content).forEach((lang) => {
         // 无效的语言
         if (langExclude.indexOf(lang) !== -1) {
@@ -87,9 +86,9 @@ function optimizeDuplicate(data, options) {
         }
         const src = content[lang];
         const langData = data[lang] = (data[lang] || {});
+        const dist = langData[langKey] = (langData[langKey] || {});
         Object.keys(src).forEach((key) => {
           if (!isFilterTextKey(options.filter.textKey, key)) {
-            const dist = langData[langKey] = (langData[langKey] || {})
             dist[key] = src[key];
           }
         });
@@ -117,7 +116,8 @@ module.exports = function (options) {
     const temp = {};
     const baseLang = options.lang.base;
     Object.keys(data).forEach((lang) => {
-      temp[lang] = helper.extractSame(data[baseLang], data[lang]);
+      const item = helper.extractSame(data[baseLang], data[lang]);
+      item && (temp[lang] = item);
     });
     data = temp;
   }
