@@ -141,7 +141,40 @@
     }
 
     .notmodify {
-      border: 1px solid #fb9a6b
+      border: 2px solid #ff0800
+    }
+
+    .c-light {
+      margin-left: 20px;
+      margin-top: 3px;
+      user-select: none;
+      cursor: pointer;
+    }
+    .curtip {
+      line-height: 18px;
+      margin-right: 10px;
+      display: flex;
+      display: -webkit-flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -moz-box-orient: vertical;
+      -moz-box-direction: normal;
+      flex-direction: column;
+      -webkit-flex-direction: column;
+      -webkit-box-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      justify-content: center;
+    }
+    .curtip div {
+      width: 100%;
+      text-align: right;
+    }
+    .flex {
+      -webkit-box-flex: 1;
+      -webkit-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
     }
   </style>
 </head>
@@ -150,7 +183,8 @@
   <div id="app">
 
     <div class="alert alert-warning" role="alert">After the translation is completed, please click the <b-button
-        variant="success" @click="exportFile">Complete & Export</b-button> button and send the downloaded file to your colleagues</div>
+        variant="success" @click="exportFile">Complete & Export</b-button> button and send the downloaded file to your
+      colleagues</div>
     <!-- <div class="text-left header">
           <span>参考语言：</span>
           <b-form-radio-group
@@ -191,10 +225,25 @@
         <p>into</p>
         <b-badge variant="primary">{{selectLang}}</b-badge>
       </div>
+      <div>
+        <b-form-checkbox class="c-light" :value="true" :unchecked-value="false" v-model="showUnfinished">
+          <div class="ta-l">
+            <span>Show current translation work</span>
+          </div>
+        </b-form-checkbox>
+      </div>
       <div class="flex"></div>
-      <div v-if="totalRemain > 0" style="line-height: 30px;margin-right: 10px;color: red;">Translation remains: <span>{{totalRemain}}</span></div>
+      <div class="curtip">
+        <div class="flex"></div>
+        <div v-if="totalRemain > 0" style="color: red;">
+          Translation remains: <span>{{totalRemain}}</span>
+        </div>
+        <div>Total words: {{totalWords}}</div>
+        <div class="flex"></div>
+      </div>
       <b-button style="margin-top: 2px;margin-right: 20px;" variant="primary" @click="exportFile(true)">Save</b-button>
-      <b-button style="margin-top: 2px;margin-right: 20px;" :variant="totalRemain?'warning':'success'" @click="exportFile">Complete & Export</b-button>
+      <b-button style="margin-top: 2px;margin-right: 20px;" :variant="totalRemain?'warning':'success'" @click="exportFile">Complete
+        & Export</b-button>
     </div>
 
     <div class="panel-content">
@@ -210,7 +259,7 @@
           </div>
         </div>
         <b-collapse :id="file" visible>
-          <div class="d-flex trans-box" v-for="(value,key) in item" :key="key">
+          <div class="d-flex trans-box" v-for="(value,key) in item" :key="key" v-if="showUnfinishedAction(file, key)">
             <span class="item-label">{{key}}</span>
             <div class="item-text">
               <p class="tip">{{originLocales[baseLang][file] ? originLocales[baseLang][file][key]: ""}}</p>
@@ -235,6 +284,11 @@
       seletedTab: 0,
       lang: window.langBase,
       msg: "",
+      finishedLocales: {},
+      showUnfinished: false,
+    },
+    mounted: function () {
+      this.checkSelectLang(this.selectLang);
     },
     computed: {
       selectLang() {
@@ -249,10 +303,48 @@
           total += this.getPending(field);
         }
         return total;
+      },
+      totalWords() {
+        var total = 0;
+
+        for (var field in this.editLocales[this.selectLang]) {
+          for (var subField in this.editLocales[this.selectLang][field]) {
+            var curItem = this.editLocales[this.selectLang][field][subField];
+            curItem = curItem.replace(/\,|\.|，|。|\!|\?/g, "");
+            if (this.selectLang.indexOf("zh") === 0) {
+              total += total.length;
+            } else {
+              curItem.split(" ").forEach((val)=>{
+                if(val) {
+                  total++;
+                }
+              });
+            }
+          }
+        }
+
+        return total;
       }
     },
     methods: {
-      checkTranlated: function(selectLang, page, field) {
+      checkSelectLang(selectLangVal) {
+        if (this.baseLang === selectLangVal) {
+          for (var index = 0; index < this.langs.length; index++) {
+            var element = this.langs[index];
+            if (this.baseLang !== element) {
+              this.baseLang = element;
+              break;
+            }
+          }
+        }
+      },
+      showUnfinishedAction(page, field) {
+        var originPageData = this.originLocales[this.baseLang][page];
+        var pageData = this.originLocales[this.selectLang][page];
+
+        return !this.showUnfinished || !pageData[field] || pageData[field] === originPageData[field];
+      },
+      checkTranlated: function (selectLang, page, field) {
         var pageData = this.editLocales[this.selectLang][page];
         var originPageData = this.originLocales[this.baseLang][page];
 
@@ -289,10 +381,12 @@
                 jsonData :
                 jsonDataResult;
 
-              for(var parentField in self.editLocales[self.selectLang]) {
-                for(var childField in self.editLocales[self.selectLang][parentField]) {
-                  if(resultData[parentField] && resultData[parentField][childField]) {
-                    self.editLocales[self.selectLang][parentField][childField] = resultData[parentField][childField];
+              for (var parentField in self.editLocales[self.selectLang]) {
+                for (var childField in self.editLocales[self.selectLang][parentField]) {
+                  if (resultData[parentField] && resultData[parentField][childField]) {
+                    self.editLocales[self.selectLang][parentField][childField] = resultData[parentField][
+                      childField
+                    ];
                   }
                 }
               }
@@ -323,7 +417,7 @@
         var content = !window.parseDuplicate ?
           JSON.stringify(this.editLocales[this.selectLang][window.rootKey], null, 4) :
           JSON.stringify(this.editLocales[this.selectLang], null, 4);
-        if(isSave !== true) {
+        if (isSave !== true) {
           timeStr += "-ok";
         } else {
           timeStr += "-unfinished";
@@ -363,7 +457,7 @@
 
       expandTansObject(transObj) {
         var newObj = {};
-        for(var field in transObj) {
+        for (var field in transObj) {
           newObj[field] = {};
           this.expandObject(newObj[field], transObj[field]);
         }
@@ -373,10 +467,10 @@
 
       expandObject(targetObj, originObj, preFieldArr) {
         var seprator = "@@@";
-        for(var field in originObj) {
-          if(typeof originObj[field] === "string") {
+        for (var field in originObj) {
+          if (typeof originObj[field] === "string") {
             var newField = field;
-            if(preFieldArr && preFieldArr.length > 0) {
+            if (preFieldArr && preFieldArr.length > 0) {
               var newFieldArr = preFieldArr.concat();
               newFieldArr.push(field);
               newField = newFieldArr.join(seprator);
@@ -389,12 +483,17 @@
           }
         }
       }
+    },
+    watch: {
+      selectLang(val) {
+        this.checkSelectLang(val);
+      }
     }
   })
 </script>
 
 <script>
-  window.onbeforeunload = function() { 
+  window.onbeforeunload = function () {
     return "Are you sure to leave the current page? Unsaved data will be lost!";
   }
 </script>
