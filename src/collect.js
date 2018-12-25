@@ -18,13 +18,35 @@ function isFilterFile(filters, filePath) {
 /**
  * 是否需要过滤文本
  */
-function isFilterTextKey(filters, textKey) {
+function isFilterTextKey(filters, textKey, file, lang) {
   filters = filters || [];
   return filters.some((filter) => {
     if (typeof filter === 'string') {
       return filter === textKey;
+    } else if (filter instanceof RegExp) {
+      return filter.test(textKey);
+    } else if (filter && typeof filter === 'object') {
+      let status = 0;
+      if (!filter.file || filter.file === file) {
+        status++;
+      }
+      if (!filter.lang || (filter.lang && Array.isArray(filter.lang) && filter.lang.indexOf(lang) !== -1)) {
+        status++;
+      }
+      let filterKey = filter.key;
+      if (filterKey) {
+        if (!Array.isArray(filterKey)) {
+          filterKey = [filterKey];
+        }
+        if (isFilterTextKey(filterKey, textKey, file, lang)) {
+          status++;
+        }
+      }
+      if (status === 3) {
+        return true;
+      }
     }
-    return filter.test(textKey);
+    return false;
   })
 }
 
@@ -37,8 +59,11 @@ function optimize(data, options) {
     const dirPath = entry[name];
     helper.traverse(dirPath, fileRegx, function (filePath, content) {
       if (isFilterFile(options.filter.file, filePath)) {
-        return
+        return;
       }
+
+      const relativePath = Path.relative(dirPath, filePath);
+      const fileKey = buildFileKey(name, relativePath, options);
 
       content = JSON.parse(content);
       Object.keys(content).forEach((lang) => {
@@ -47,9 +72,9 @@ function optimize(data, options) {
           return;
         }
         const src = content[lang];
-        const langData = data[lang] = (data[lang] || {});
         Object.keys(src).forEach((key) => {
-          if (!isFilterTextKey(options.filter.textKey, key)) {
+          if (!isFilterTextKey(options.filter.textKey, key, fileKey, lang)) {
+            const langData = data[lang] = (data[lang] || {});
             langData[key] = src[key];
           }
         });
@@ -59,36 +84,41 @@ function optimize(data, options) {
   return data;
 }
 
+function buildFileKey(name, relativePath, options) {
+  const parse = options.parse;
+  const noSuffix = relativePath.replace(options._fileRegx, ''); // 去掉后缀
+  return name + parse.connector + noSuffix.split(Path.sep).join(parse.connector) + (parse.keyPostfix || '');
+}
+
 function optimizeDuplicate(data, options) {
   const entry = options.entry;
   const fileRegx = options._fileRegx;
   const langExclude = options.lang.exclude || [];
-  const parse = options.parse;
 
   Object.keys(entry).forEach((name) => {
     const dirPath = entry[name];
     helper.traverse(dirPath, fileRegx, function (filePath, content) {
       if (isFilterFile(options.filter.file, filePath)) {
-        return
+        return;
       }
 
       content = JSON.parse(content);
 
       const relativePath = Path.relative(dirPath, filePath);
 
-      // 构造key
-      const noSuffix = relativePath.replace(fileRegx, ''); // 去掉后缀
-      const langKey = name + parse.connector + noSuffix.split(Path.sep).join(parse.connector) + (parse.keyPostfix || '');
+      const fileKey = buildFileKey(name, relativePath, options);
+
       Object.keys(content).forEach((lang) => {
         // 无效的语言
         if (langExclude.indexOf(lang) !== -1) {
           return;
         }
         const src = content[lang];
-        const langData = data[lang] = (data[lang] || {});
-        const dist = langData[langKey] = (langData[langKey] || {});
+
         Object.keys(src).forEach((key) => {
-          if (!isFilterTextKey(options.filter.textKey, key)) {
+          if (!isFilterTextKey(options.filter.textKey, key, fileKey, lang)) {
+            const langData = data[lang] = (data[lang] || {});
+            const dist = langData[fileKey] = (langData[fileKey] || {});
             dist[key] = src[key];
           }
         });
