@@ -26,11 +26,14 @@ module.exports = {
     file: [
     ],
     textKey: [
-      {
-        file: "pages_test_name",
-        lang: ["en_US"],
-        key: [/^namekey/],
-      },
+      // {
+      //   file: "pages_test_name",
+      //   lang: ["en_US"],
+      //   key: ['namekey1'],
+      // },
     ],
+    text: [
+      "@Not Required@"
+    ]
   }
 }

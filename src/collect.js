@@ -16,7 +16,7 @@ function isFilterFile(filters, filePath) {
 }
 
 /**
- * 是否需要过滤文本
+ * 是否需要过滤文本key
  */
 function isFilterTextKey(filters, textKey, file, lang) {
   filters = filters || [];
@@ -47,7 +47,19 @@ function isFilterTextKey(filters, textKey, file, lang) {
       }
     }
     return false;
-  })
+  });
+}
+
+function isFilterText(filters, text) {
+  filters = filters || [];
+  return filters.some((filter) => {
+    if (typeof filter === 'string') {
+      return filter === text;
+    } else if (filter instanceof RegExp) {
+      return filter.test(text);
+    }
+    return false;
+  });
 }
 
 function optimize(data, options) {
@@ -73,7 +85,8 @@ function optimize(data, options) {
         }
         const src = content[lang];
         Object.keys(src).forEach((key) => {
-          if (!isFilterTextKey(options.filter.textKey, key, fileKey, lang)) {
+          const shouldFilter = isFilterTextKey(options.filter.textKey, key, fileKey, lang) || isFilterText(options.filter.text, src[key])
+          if (!shouldFilter) {
             const langData = data[lang] = (data[lang] || {});
             langData[key] = src[key];
           }
@@ -116,11 +129,12 @@ function optimizeDuplicate(data, options) {
         const src = content[lang];
 
         Object.keys(src).forEach((key) => {
-          if (!isFilterTextKey(options.filter.textKey, key, fileKey, lang)) {
+          const shouldFilter = isFilterTextKey(options.filter.textKey, key, fileKey, lang) || isFilterText(options.filter.text, src[key]);
+          if (!shouldFilter) {
             const langData = data[lang] = (data[lang] || {});
             const dist = langData[fileKey] = (langData[fileKey] || {});
             dist[key] = src[key];
-          }
+          };
         });
       });
 
@@ -135,6 +149,7 @@ module.exports = function (options) {
   let data = {}
   if (options.filter.textKeyDuplicate) {
     optimizeDuplicate(data, options);
+    console.log(data);
   } else {
     optimize(data, options);
   }
@@ -149,6 +164,7 @@ module.exports = function (options) {
       const item = helper.extractSame(data[baseLang], data[lang]);
       item && (temp[lang] = item);
     });
+    console.log(temp);
     data = temp;
   }
 
