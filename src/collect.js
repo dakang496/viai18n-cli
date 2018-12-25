@@ -149,7 +149,6 @@ module.exports = function (options) {
   let data = {}
   if (options.filter.textKeyDuplicate) {
     optimizeDuplicate(data, options);
-    console.log(data);
   } else {
     optimize(data, options);
   }
@@ -164,7 +163,6 @@ module.exports = function (options) {
       const item = helper.extractSame(data[baseLang], data[lang]);
       item && (temp[lang] = item);
     });
-    console.log(temp);
     data = temp;
   }
 
