@@ -145,7 +145,7 @@ function optimizeDuplicate(data, options) {
 }
 
 
-module.exports = function (options) {
+module.exports = async function (options) {
   let data = {}
   if (options.filter.textKeyDuplicate) {
     optimizeDuplicate(data, options);
@@ -156,22 +156,31 @@ module.exports = function (options) {
   /**
    * 过滤掉已经翻译过的
    */
-  if (options.filter.translated) {
+  const translated = options.filter.translated;
+  if (translated && translated.enable) {
     const temp = {};
     const baseLang = options.lang.base;
+    const langs = typeof translated.lang === 'string' ? [translated.lang] : (translated.lang || []);
     Object.keys(data).forEach((lang) => {
-      const item = helper.extractSame(data[baseLang], data[lang]);
-      item && (temp[lang] = item);
+      if (langs.indexOf(lang) !== -1) {
+        const item = helper.extractSame(data[baseLang], data[lang]);
+        item && (temp[lang] = item);
+      } else {
+        temp[lang] = data[lang];
+      }
     });
     data = temp;
   }
+
+  options.output.locale && await Fse.remove(options.output.locale);
+  await Fse.remove(options._webLocale);
 
   Object.keys(data).forEach((lang) => {
     const content = JSON.stringify(data[lang], null, 4);
     if (options.output.locale) {
       Fse.outputFileSync(Path.resolve(options.output.locale, lang + '.json'), content);
     }
-    Fse.outputFileSync(Path.resolve(__dirname, '..', options._webLocale, lang + '.json'), content);
+    Fse.outputFileSync(Path.resolve(options._webLocale, lang + '.json'), content);
   });
 }
 

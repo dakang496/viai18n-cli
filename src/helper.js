@@ -29,7 +29,7 @@ function extractSame(base, source) {
     const baseType = typeof baseValue;
     if (sourceType === 'object' && baseType === 'object') {
       const obj = extractSame(baseValue, sourceValue);
-      if(obj){
+      if (obj) {
         result[key] = obj;
       }
     } else if (sourceType === 'string' && baseType === 'string') {
@@ -47,11 +47,14 @@ function merge(source, update) {
   }
   for (let key in update) {
     if (update.hasOwnProperty(key)) {
-      const type = typeof update[key];
-      if (type !== 'object') {
+      if (typeof update[key] !== 'object') {
         source[key] = update[key];
       } else {
-        source[key] = merge(source[key], update[key]);
+        if (typeof source[key] === 'object') {
+          source[key] = merge(source[key], update[key]);
+        } else {
+          source[key] = update[key];
+        }
       }
     }
   }

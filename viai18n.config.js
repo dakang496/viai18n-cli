@@ -21,8 +21,11 @@ module.exports = {
   },
   /** 过滤的配置 */
   filter: {
-    textKeyDuplicate: true,
-    translated: false, // 是否过滤掉已经翻译过的
+    textKeyDuplicate: false,
+    translated: { // 是否过滤掉已经翻译过的
+      enable: true,
+      lang: ["ko_KP"],
+    },
     file: [
     ],
     textKey: [

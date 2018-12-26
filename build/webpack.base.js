@@ -1,6 +1,7 @@
 
 const Path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 function resolve(dir) {
   return Path.join(__dirname, '..', dir)
 }
@@ -58,7 +59,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: 'index.html',
+      filename: 'i18n.html',
       template: Path.resolve(__dirname, 'template.html'),
       inject: true,
       minify: {
@@ -69,7 +70,10 @@ module.exports = {
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
+      // chunksSortMode: 'dependency',
+
+      inlineSource: '.(js|css)$', // 内联
     }),
+    new HtmlWebpackInlineSourcePlugin(),
   ]
 }

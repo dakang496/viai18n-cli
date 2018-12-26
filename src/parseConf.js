@@ -13,14 +13,17 @@ function createDefaults() {
       base: 'zh_Hans_CN',
       exclude: []
     },
-    _webLocale: './src/web/locale',
+    _webLocale: path.resolve(__dirname, '..', './src/web/locales'),
     parse: {
       connector: '_', // 链接符
       postfix: '.messages.json', // 匹配的文件后缀
       keyPostfix: '',
     },
     filter: {
-      translated: true, // 是否过滤掉已经翻译过的
+      // translated: { // 是否过滤掉已经翻译过的
+      //   enable: true,
+      //   lang: [""],
+      // },
       textKeyDuplicate: true,
       file: [
       ],
