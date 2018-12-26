@@ -288,7 +288,6 @@
       langs: window.langs,
       baseLang: window.langs[0],
       seletedTab: 0,
-      lang: window.langBase,
       msg: "",
       finishedLocales: {},
       showUnfinished: false,
@@ -330,6 +329,9 @@
         }
 
         return total;
+      },
+      projectBaseLang() {
+        return window.langBase || this.baseLang;
       }
     },
     methods: {
@@ -357,7 +359,7 @@
         return false;
       },
       showUnfinishedAction(page, field) {
-        var originPageData = this.originLocales[this.baseLang][page];
+        var originPageData = this.originLocales[this.projectBaseLang][page];
         var pageData = this.originLocales[this.selectLang][page];
 
         return !this.showUnfinished || !pageData[field] ||
@@ -365,7 +367,7 @@
       },
       isTranlated: function (selectLang, page, field, shouldChangeMsg) {
         var pageData = this.editLocales[this.selectLang][page];
-        var originPageData = this.originLocales[this.baseLang][page];
+        var originPageData = this.originLocales[this.projectBaseLang][page];
 
         if (!pageData || !originPageData) {
           if(this.shouldChangeMsg) {
@@ -378,7 +380,7 @@
           return true;
         }
 
-        if (this.selectLang === this.baseLang) {
+        if (this.selectLang === this.projectBaseLang) {
           if (pageData[field] !== originPageData[field] || !pageData[field]) {
             return false;
           }
@@ -457,7 +459,7 @@
         var total = 0;
         try {
           var pageData = this.editLocales[this.selectLang][page];
-          var originPageData = this.originLocales[this.baseLang][page];
+          var originPageData = this.originLocales[this.projectBaseLang][page];
 
           if (!pageData || !originPageData) {
             this.msg = '<span style="color: red;">File not matched</span>';
