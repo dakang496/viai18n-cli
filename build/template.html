@@ -344,49 +344,54 @@
           }
         }
       },
-      checkPunctuation: function (originstr, str, baselang, selectlang) {
+      checkPunctuationTranlated: function (selectlang, str) {
         var enDict = SAME_PUNCTUATION.enDict;
         var zhDict = SAME_PUNCTUATION.zhDict;
         var en = SAME_PUNCTUATION.en;
         var zh = SAME_PUNCTUATION.zh;
-
-        if(originstr === str) {
-          if((enDict.indexOf(selectlang) >=0 && en.indexOf(str) >= 0)|| 
-            (zhDict.indexOf(selectlang) >=0 && zh.indexOf(str) >= 0)){
-              return false;
-          }
-
-          return true;
-        } else {
-          return false;
+        if(str.length === 1 && ((enDict.indexOf(selectlang) >=0 && en.indexOf(str) >= 0)|| 
+          (zhDict.indexOf(selectlang) >=0 && zh.indexOf(str) >= 0))){
+            return true;
         }
+
+        return false;
       },
       showUnfinishedAction(page, field) {
         var originPageData = this.originLocales[this.baseLang][page];
         var pageData = this.originLocales[this.selectLang][page];
 
-        return !this.showUnfinished || !pageData[field] || this.checkPunctuation(originPageData[field], pageData[field], this.baseLang, this.selectLang);
+        return !this.showUnfinished || !pageData[field] ||
+          (this.checkPunctuationTranlated(this.selectLang, pageData[field]) ? false : originPageData[field] === pageData[field]);
       },
-      checkTranlated: function (selectLang, page, field) {
+      isTranlated: function (selectLang, page, field, shouldChangeMsg) {
         var pageData = this.editLocales[this.selectLang][page];
         var originPageData = this.originLocales[this.baseLang][page];
 
         if (!pageData || !originPageData) {
-          this.msg = '<span style="color: red;">File not matched</span>';
-          return "";
+          if(this.shouldChangeMsg) {
+            this.msg = '<span style="color: red;">File not matched</span>';
+          }
+          return false;
+        }
+
+        if(this.checkPunctuationTranlated(this.selectLang, pageData[field])) {
+          return true;
         }
 
         if (this.selectLang === this.baseLang) {
           if (pageData[field] !== originPageData[field] || !pageData[field]) {
-            return "notmodify"
+            return false;
           }
         } else {
           if (pageData[field] === originPageData[field] || !pageData[field]) {
-            return "notmodify"
+            return false;
           }
         }
 
-        return "";
+        return true;
+      },
+      checkTranlated: function (selectLang, page, field) {
+        return this.isTranlated(selectLang, page, field)? "" : "notmodify";
       },
       handleFiles: function (files) {
         if (files.length) {
@@ -460,14 +465,8 @@
           }
 
           for (var field in pageData) {
-            if (this.selectLang === this.baseLang) {
-              if (pageData[field] !== originPageData[field] || !pageData[field]) {
-                total++;
-              }
-            } else {
-              if (pageData[field] === originPageData[field] || !pageData[field]) {
-                total++;
-              }
+            if(!this.isTranlated(this.selectlang, page, field)) {
+              total++;
             }
           }
         } catch (error) {
