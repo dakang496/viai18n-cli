@@ -10,6 +10,7 @@ module.exports = {
   /** 语言的相关配置 */
   lang: {
     base: 'zh_Hans_CN',
+    target: "ko_KP",
     exclude: [
       'lastUpdateTime'
     ]

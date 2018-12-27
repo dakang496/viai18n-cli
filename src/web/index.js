@@ -30,5 +30,6 @@ const langs = Object.keys(curOrigin);
 window.langs = langs;
 window.originLocales = JSON.parse(JSON.stringify(curOrigin));
 window.langBase = LANG_BASE;
+window.langTarget = LANG_TARGET;
 
 

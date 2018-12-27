@@ -10,6 +10,7 @@ module.exports = function (options) {
     },
     plugins: [
       new webpack.DefinePlugin({
+        LANG_TARGET: JSON.stringify(options.lang.target),
         LANG_BASE: JSON.stringify(options.lang.base),
         PARSE_DUPLICATE:JSON.stringify(options.filter.textKeyDuplicate),
       }),
