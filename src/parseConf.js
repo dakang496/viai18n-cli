@@ -13,7 +13,6 @@ function createDefaults() {
       base: 'zh_Hans_CN',
       exclude: []
     },
-    _webLocale: path.resolve(__dirname, '..', './src/web/locales'),
     parse: {
       connector: '_', // 链接符
       postfix: '.messages.json', // 匹配的文件后缀

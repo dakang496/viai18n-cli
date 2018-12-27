@@ -173,14 +173,13 @@ module.exports = async function (options) {
   }
 
   options.output.locale && await Fse.remove(options.output.locale);
-  await Fse.remove(options._webLocale);
+
 
   Object.keys(data).forEach((lang) => {
     const content = JSON.stringify(data[lang], null, 4);
     if (options.output.locale) {
       Fse.outputFileSync(Path.resolve(options.output.locale, lang + '.json'), content);
     }
-    Fse.outputFileSync(Path.resolve(options._webLocale, lang + '.json'), content);
   });
 }
 

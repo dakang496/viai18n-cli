@@ -14,7 +14,12 @@ module.exports = function (options) {
         LANG_BASE: JSON.stringify(options.lang.base),
         PARSE_DUPLICATE:JSON.stringify(options.filter.textKeyDuplicate),
       }),
-    ]
+    ],
+    resolve: {
+      alias: {
+        '@': options.output.locale,
+      },
+    },
   });
 
   const devServerOptions = Object.assign({}, webpackConf.devServer);

@@ -7,11 +7,17 @@ const options = parseConf('viai18n.config.js');
 
 module.exports = merge(webpackBase, {
   devServer: {
+    openPage:"i18n.html",
     inline: true,
     hot: true, // 启用 webpack 的模块热替换特性
     open: true, // 启用 open 后，dev server 会打开浏览器
     stats: {
       colors: true
+    },
+  },
+  resolve: {
+    alias: {
+      '@': options.output.locale,
     },
   },
   plugins: [

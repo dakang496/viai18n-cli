@@ -3,6 +3,7 @@ const webpackProd = require('../build/webpack.prod');
 const merge = require('webpack-merge');
 
 module.exports = function (options) {
+
   const webpackConf = merge(webpackProd, {
     output: {
       path: options.output.html,
@@ -13,7 +14,13 @@ module.exports = function (options) {
         LANG_BASE: JSON.stringify(options.lang.base),
         PARSE_DUPLICATE: JSON.stringify(options.filter.textKeyDuplicate),
       }),
-    ]
+    ],
+    resolve: {
+      alias: {
+        '@': options.output.locale,
+      },
+    },
+
   });
 
   webpack(webpackConf, (err, stats) => {
