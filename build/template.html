@@ -100,6 +100,7 @@
       padding: 0 10px;
       margin-bottom: 0;
       overflow: hidden;
+      cursor: pointer;
     }
 
     #app .cal-tip span {
@@ -176,6 +177,9 @@
       -ms-flex: 1;
       flex: 1;
     }
+    .hide {
+      display: none;
+    }
   </style>
 </head>
 
@@ -201,8 +205,8 @@
           </b-form-radio-group>
         </div> -->
 
-    <b-tabs v-model="seletedTab">
-      <b-tab :title="lang" v-for="(lang,index) in langs" :key="index">
+    <b-tabs v-model="seletedTab" style="user-select: none;">
+      <b-tab :title="lang" v-for="(lang,index) in langs" :key="index" :disabled="targetTab<0||targetTab===index?false:'disabled'">
       </b-tab>
     </b-tabs>
 
@@ -280,17 +284,20 @@
     enDict: ["en_US", "in", "ko_KP", "ru_KZ"],
     zhDict: ["zh_Hans_CN", "ja_JP", "zh_Hant_HK"],
   };
+  var targetTab = window.langs.indexOf(window.langTarget);
+  var seletedTab = targetTab >= 0 ? targetTab : 0;
   var app = new Vue({
     el: '#app',
     data: {
       originLocales: originLocales,
       editLocales: JSON.parse(JSON.stringify(originLocales)),
       langs: window.langs,
+      seletedTab: seletedTab,
       baseLang: window.langs[0],
-      seletedTab: 0,
       msg: "",
       finishedLocales: {},
       showUnfinished: false,
+      targetTab: targetTab
     },
     mounted: function () {
       this.checkSelectLang(this.selectLang);
