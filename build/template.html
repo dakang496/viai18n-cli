@@ -228,7 +228,7 @@
       <div>
         <b-form-checkbox class="c-light" :value="true" :unchecked-value="false" v-model="showUnfinished">
           <div class="ta-l">
-            <span>Show current translation work</span>
+            <span>Show only pending work</span>
           </div>
         </b-form-checkbox>
       </div>
@@ -314,8 +314,13 @@
 
         for (var field in this.editLocales[this.selectLang]) {
           for (var subField in this.editLocales[this.selectLang][field]) {
+            if(!this.isTranlated(this.selectLang, field, subField)) {
+              continue;
+            }
+
             var curItem = this.editLocales[this.selectLang][field][subField];
             curItem = curItem.replace(/\,|\.|，|。|\!|\?/g, "");
+
             if (this.selectLang.indexOf("zh") === 0) {
               total += total.length;
             } else {
