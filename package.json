@@ -1,6 +1,6 @@
 {
   "name": "viai18n-cli",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,12 +17,8 @@
     "type": "git",
     "url": "git+https://github.com/viabtc/viai18n-cli.git"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/viabtc/viai18n-cli/issues"
-  },
-  "homepage": "https://github.com/viabtc/viai18n-cli#readme",
+  "author": "viabtc.com",
+  "license": "MIT",
   "dependencies": {
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
@@ -45,10 +41,5 @@
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }
