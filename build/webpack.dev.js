@@ -6,6 +6,7 @@ const parseConf = require('../src/parseConf');
 const options = parseConf('viai18n.config.js');
 
 module.exports = merge(webpackBase, {
+  mode: 'development',
   devServer: {
     openPage:"i18n.html",
     inline: true,

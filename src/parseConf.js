@@ -28,6 +28,11 @@ function createDefaults() {
       ],
       textKey: [
       ],
+    },
+    process: {
+      part: {
+        careful: true
+      }
     }
   }
 };

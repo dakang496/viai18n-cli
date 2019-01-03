@@ -14,6 +14,7 @@ const dev = require('./src/dev');
 const parseConf = require('./src/parseConf');
 
 const changeLang = require('./src/utils/changeLang');
+const changeHash = require('./src/utils/changeHash');
 
 program.version('0.1.0');
 program.option('-c, --config [file]', 'setup profile', 'viai18n.config.js');
@@ -84,4 +85,17 @@ program
       newLang: program.langs[1],
     });
   });
+
+  program
+  .command('changeHash')
+  .description('change hash')
+  .action(function () {
+    console.log('changeHash');
+
+    const config = parseConf(program.config);
+    changeHash({
+      ...config,
+    });
+  });
+
 program.parse(process.argv);

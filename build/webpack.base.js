@@ -1,19 +1,11 @@
 
 const Path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 function resolve(dir) {
   return Path.join(__dirname, '..', dir)
 }
 
-// const postcssLoader = {
-//   loader: 'postcss-loader',
-//   options: {
-//     config: {
-//       path: Path.resolve(__dirname, '..'),
-//     }
-//   }
-// };
 module.exports = {
   entry: {
     app: Path.resolve(__dirname, '../src/web/index.js'),
@@ -30,30 +22,11 @@ module.exports = {
   },
   module: {
     rules: [
-      // {
-      //   test: /\.vue$/,
-      //   loader: 'vue-loader',
-      // },
       {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src/web'), resolve('node_modules/webpack-dev-server/client')]
       },
-      // {
-      //   test: /\.css$/,
-      //   use: [
-      //     'vue-style-loader',
-      //     'css-loader',
-      //     postcssLoader
-      //   ],
-      // },
-      // {
-      //   test: /\.scss$/,
-      //   use: [
-      //     'sass-loader',
-      //     postcssLoader
-      //   ]
-      // },
     ]
   },
   plugins: [
@@ -65,14 +38,11 @@ module.exports = {
         removeComments: true,
         collapseWhitespace: true,
         removeAttributeQuotes: true
-        // more options:
-        // https://github.com/kangax/html-minifier#options-quick-reference
       },
-      // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      // chunksSortMode: 'dependency',
-
       inlineSource: '.(js|css)$', // 内联
     }),
-    new HtmlWebpackInlineSourcePlugin(),
+    new ScriptExtHtmlWebpackPlugin({
+      inline: /\.js$/,
+    })
   ]
 }

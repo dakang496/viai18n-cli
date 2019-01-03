@@ -20,6 +20,20 @@ function traverse(dir, match, handler) {
   });
 }
 
+function traverseObj(obj, callback) {
+  if (!obj || typeof obj !== 'object') {
+    return;
+  }
+  Object.keys(obj).forEach((key) => {
+    const type = typeof obj[key];
+    if (type === 'object') {
+      traverseObj(obj[key], callback);
+    } else {
+      callback && callback(key, obj[key], obj);
+    }
+  })
+}
+
 function extractSame(base, source) {
   const result = {}
   for (var key in source) {
@@ -105,6 +119,7 @@ function sortObjectByKey(unordered) {
 
 module.exports = {
   traverse: traverse,
+  traverseObj: traverseObj,
   merge: merge,
   isFileExist: isFileExist,
   readFileSync: readFileSync,

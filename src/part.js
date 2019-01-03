@@ -17,7 +17,9 @@ function optimize(options) {
 
   const entry = options.entry;
   const langBase = options.lang.base;
+  const langTarget = options.lang.target;
   const fileRegx = options._fileRegx;
+  const partCareful = options.process.part.careful;
 
   Object.keys(entry).forEach((name) => {
     const dirPath = entry[name];
@@ -29,12 +31,32 @@ function optimize(options) {
         if (langBase === lang) { // 基础语言不需要赋值
           return;
         };
+        if (langTarget && lang !== langTarget) { // 目标语言存在，当前语言不是目标语言
+          return;
+        }
+
         const srcLangData = data[lang];
+        if (!srcLangData) { // 没有该语言数据
+          return;
+        }
+        const baseLangData = content[langBase];
         const distLangData = content[lang];
         Object.keys(distLangData).forEach((key) => {
           if (srcLangData[key] && distLangData[key] !== srcLangData[key]) {
-            distLangData[key] = srcLangData[key];
-            modified = true
+            // 和基于语言文案一样，则没翻译，不修改当前语言文案
+            if (baseLangData && baseLangData[key] && baseLangData[key] === srcLangData[key]) {
+              return;
+            }
+            if (partCareful && baseLangData) {
+              // 目标语言的文案和基础语言一样才需要修改
+              if (baseLangData[key] && baseLangData[key] === distLangData[key]) {
+                distLangData[key] = srcLangData[key];
+                modified = true
+              }
+            } else {
+              distLangData[key] = srcLangData[key];
+              modified = true
+            }
           }
         });
       });
@@ -56,7 +78,7 @@ function optimizeDuplicate(options) {
 
     Object.keys(content).forEach((fileKey) => {
       const srcFileData = content[fileKey];
-      const srcKeys = Object.keys(srcFileData);      
+      const srcKeys = Object.keys(srcFileData);
       if (srcKeys && srcKeys.length > 0) {
         const fileData = data[fileKey] = data[fileKey] || {};
         const langData = fileData[lang] = fileData[lang] || {};
