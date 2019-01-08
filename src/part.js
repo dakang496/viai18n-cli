@@ -98,7 +98,12 @@ function optimizeDuplicate(options) {
     if (keyPostfixRegx) {
       fixedFileKey = fileKey.replace(keyPostfixRegx, '');
     }
-    const splits = fixedFileKey.split(parse.connector);
+    /** 处理文件名包含连接符的问题 */
+    let connectorRegx = parse.connector;
+    if (typeof connectorRegx === 'string') {
+      connectorRegx = new RegExp('([^' + connectorRegx + '])' + connectorRegx, 'g')
+    }
+    const splits = fixedFileKey.replace(connectorRegx,'$1@@@###').split('@@@###');
     splits[0] = entry[splits[0]];
     if (!splits[0]) {
       console.error('not exist entry', fileKey);

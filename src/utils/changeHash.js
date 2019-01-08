@@ -24,7 +24,9 @@ module.exports = function (options) {
   helper.traverse(oldLocales, new RegExp(regxStr), function (filePath, content) {
     content = JSON.parse(content);
     helper.traverseObj(content, function (key, value, obj) {
-      keyMap[key] = getTextKey(value);
+      if(typeof value === 'string'){
+        keyMap[key] = getTextKey(value);
+      }
     })
   });
 
