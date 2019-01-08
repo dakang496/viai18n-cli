@@ -326,12 +326,12 @@
             }
 
             var curItem = this.editLocales[this.selectLang][field][subField];
-            curItem = curItem.replace(/\,|\.|，|。|\!|\?/g, "");
+            curItem = curItem.toString().replace(/\,|\.|，|。|\!|\?/g, "");
 
-            if (this.selectLang.indexOf("zh") === 0) {
-              total += total.length;
+            if (this.selectLang.indexOf("zh") === 0 || this.selectLang === "ja_JP") {
+              total += curItem.length;
             } else {
-              curItem.split(" ").forEach((val)=>{
+              curItem.toString().split(" ").forEach((val)=>{
                 if(val) {
                   total++;
                 }
