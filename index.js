@@ -1,34 +1,30 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
 const program = require('commander');
-const path = require('path');
 
-const part = require('./src/part');
-const collect = require('./src/collect');
-const gen = require('./src/gen');
-const dev = require('./src/dev');
+const genCommand = require('./src/command/gen');
+const devCommand = require('./src/command/dev');
 const parseConf = require('./src/parseConf');
+const collectCommand = require('./src/command/collect');
+const splitCommand = require('./src/command/split');
 
 const changeLang = require('./src/utils/changeLang');
 const changeHash = require('./src/utils/changeHash');
 
-program.version('0.1.0');
+const pkg = require('./package.json');
+program.version(pkg.version);
 program.option('-c, --config [file]', 'setup profile', 'viai18n.config.js');
-program.option('-l, --langs <items>', 'modify lang name', function (val) {
+program.option('-l, --langs [items]', 'modify lang name', function (val) {
   return val.split(',');
 }, []);
 
 program
-  .command('part')
-  .description('part locales')
+  .command('split')
+  .description('split locales')
   .action(function () {
-    console.log('part');
+    console.log('split');
     const config = parseConf(program.config);
-    part(config);
+    splitCommand(config);
   });
 
 program
@@ -37,7 +33,7 @@ program
   .action(function () {
     console.log('collect');
     const config = parseConf(program.config);
-    collect(config);
+    collectCommand(config)
   });
 
 program
@@ -46,7 +42,7 @@ program
   .action(function () {
     console.log('generate');
     const config = parseConf(program.config);
-    gen(config);
+    genCommand(config);
   });
 
 program
@@ -55,17 +51,17 @@ program
   .action(function () {
     console.log('dev');
     const config = parseConf(program.config);
-    dev(config);
+    devCommand(config);
   });
 
 program
   .command('start')
   .description('collect and generate')
-  .action(function () {
+  .action(async function () {
     console.log('start');
     const config = parseConf(program.config);
-    collect(config);
-    gen(config);
+    await collectCommand(config);
+    await genCommand(config);
   });
 
 program

@@ -28,7 +28,7 @@ module.exports = merge(webpackBase, {
       },
       LANG_BASE: JSON.stringify(options.lang.base),
       LANG_TARGET: JSON.stringify(options.lang.target),
-      PARSE_DUPLICATE:JSON.stringify(options.filter.textKeyDuplicate),
+      PARSE_DUPLICATE:false,
     }),
     new webpack.HotModuleReplacementPlugin()
   ]

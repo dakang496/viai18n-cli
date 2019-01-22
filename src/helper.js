@@ -1,23 +1,31 @@
 const Fse = require('fs-extra');
 const Path = require('path');
 
-function traverse(dir, match, handler) {
+function traverse(dir, handler, match, exclude) {
   const stats = Fse.statSync(dir)
-  if (!stats || !stats.isDirectory()) { // 是否文件夹
-    return;
+  if (!stats || !stats.isDirectory()) {
+    return false;
   }
+
   const files = Fse.readdirSync(dir) || [];
   files.forEach((file) => {
     const filePath = Path.resolve(dir, file);
-    if (match.test(file)) {
+    const result = traverse(filePath, handler, match, exclude);
+    if (!result) { // not directory
+      let filterable = !match || !match.test(file) || exclude && exclude.some((regx) => {
+        return regx.test(file);
+      });
+      if (filterable) {
+        return;
+      }
+
       const content = Fse.readFileSync(filePath, {
         encoding: 'utf8'
       });
       handler && content && handler(filePath, content);
-    } else {
-      traverse(filePath, match, handler);
     }
   });
+  return true;
 }
 
 function traverseObj(obj, callback) {
@@ -102,7 +110,8 @@ function readFileSync(path) {
 function fitRegx(str) {
   return str.replace(/\./g, '\\.').replace(/\+/g, '\\+')
     .replace(/\?/g, '\\?').replace(/\*/g, '\\*')
-    .replace(/\^/g, '\\^').replace(/\$/g, '\\$');
+    .replace(/\^/g, '\\^').replace(/\$/g, '\\$')
+    .replace(/\|/g, '\\|');
 }
 
 function sortObjectByKey(unordered) {

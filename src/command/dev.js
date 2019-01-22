@@ -1,5 +1,5 @@
 const webpack = require("webpack");
-const webpackDev = require('../build/webpack.dev');
+const webpackDev = require('../../build/webpack.dev');
 const merge = require('webpack-merge');
 const webpackDevServer = require('webpack-dev-server');
 
@@ -12,7 +12,7 @@ module.exports = function (options) {
       new webpack.DefinePlugin({
         LANG_TARGET: JSON.stringify(options.lang.target),
         LANG_BASE: JSON.stringify(options.lang.base),
-        PARSE_DUPLICATE:JSON.stringify(options.filter.textKeyDuplicate),
+        PARSE_DUPLICATE: false,
       }),
     ],
     resolve: {
@@ -24,7 +24,7 @@ module.exports = function (options) {
 
   const devServerOptions = Object.assign({}, webpackConf.devServer);
   const compiler = webpack(webpackConf);
-  
+
   console.log(JSON.stringify(devServerOptions));
   const server = new webpackDevServer(compiler, devServerOptions);
   server.listen(9987, '127.0.0.1', () => {

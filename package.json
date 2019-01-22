@@ -1,13 +1,14 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "collect": "node index.js collect",
-    "part": "node index.js part",
-    "start": "node index.js start",
-    "web-build": "node index.js gen",
+    "collect": "node index.js collect -c example/viai18n.config.js",
+    "gen": "node index.js gen -c example/viai18n.config.js",
+    "split": "node index.js split -c example/viai18n.config.js",
+    "start": "node index.js start -c example/viai18n.config.js",
+    "web-build": "node index.js gen -c example/viai18n.config.js",
     "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js"
   },
   "bin": {

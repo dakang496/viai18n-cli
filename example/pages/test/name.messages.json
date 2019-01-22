@@ -1,11 +1,14 @@
 {
   "zh_Hans_CN": {
-    "namekey1": "zh-value1"
+    "namekey1": "zh-name1"
   },
   "en_US": {
-    "namekey1": "en-value1"
+    "namekey1": "zh-name1"
   },
   "ko_KP": {
-    "namekey1": "zh-value1"
+    "namekey1": "zh-name1"
+  },
+  "zh_Hant_HK": {
+    "namekey1": "zh-name1"
   }
 }
