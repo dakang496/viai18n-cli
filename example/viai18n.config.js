@@ -10,39 +10,36 @@ module.exports = {
   /** 语言的相关配置 */
   lang: {
     base: 'zh_Hans_CN',
-    target: "ko_KP",
-    exclude: [
-      'lastUpdateTime'
-    ]
+    // target: "ko_KP",
   },
   /** 解析的相关配置 */
-  parse: {
-    connector: '_', // 连接符
+  resolve: {
     postfix: '.messages.json', // 匹配的文件后缀
   },
-  /** 过滤的配置 */
-  filter: {
-    textKeyDuplicate: false,
+  /** 过滤 */
+  exclude: {
     translated: { // 是否过滤掉已经翻译过的
       enable: true,
-      lang: ["ko_KP"],
+      // lang: ["ja_JP"],
     },
-    file: [
+    lang: [
+      'lastUpdateTime',
+      "zh_Hant_HK"
     ],
-    textKey: [
-      // {
-      //   file: "pages_test_name",
-      //   lang: ["en_US"],
-      //   key: ['namekey1'],
-      // },
+    file: [
+      // /^index.messages.json/
+    ],
+    key: [
+      // "key1"
+      {
+        // file: "pages_test_name",
+        lang: ["en_US"],
+        value: ['namekey1'],
+      },
     ],
     text: [
-      "@Not Required@"
-    ]
+      "@Not Required@",
+    ],
   },
-  process:{
-    part: {
-      careful: true
-    }
-  }
+
 }
