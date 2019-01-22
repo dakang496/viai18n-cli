@@ -12,8 +12,8 @@ function traverse(dir, handler, match, exclude) {
     const filePath = Path.resolve(dir, file);
     const result = traverse(filePath, handler, match, exclude);
     if (!result) { // not directory
-      let filterable = !match || !match.test(file) || exclude && exclude.some((regx) => {
-        return regx.test(file);
+      let filterable = !match || !match.test(filePath) || exclude && exclude.some((regx) => {
+        return regx.test(filePath);
       });
       if (filterable) {
         return;

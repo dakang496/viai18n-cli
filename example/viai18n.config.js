@@ -27,7 +27,7 @@ module.exports = {
       "zh_Hant_HK"
     ],
     file: [
-      // /^index.messages.json/
+      // /index\.messages\.json/
     ],
     key: [
       // "key1"
