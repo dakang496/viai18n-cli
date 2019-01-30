@@ -47,7 +47,7 @@ module.exports = function (context, data) {
       return;
     }
     const langData = distContent[lang];
-    const relativePath = Path.relative(data.rootPath, data.filePath);
+    const relativePath = Path.relative(Path.resolve(data.rootPath,'../'), data.filePath);
     Object.keys(langData).forEach((key) => {
       /**
        *  过滤掉key和文本

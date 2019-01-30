@@ -49,7 +49,6 @@ module.exports = function (filename) {
     const p = path.resolve(filename);
     custom = helper.isFileExist(p) ? require(p) : {};
   } catch (error) {
-    
     console.error(error);
   }
   try {

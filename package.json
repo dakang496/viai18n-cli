@@ -1,12 +1,13 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "main": "index.js",
   "scripts": {
     "collect": "node index.js collect -c example/viai18n.config.js",
     "gen": "node index.js gen -c example/viai18n.config.js",
     "split": "node index.js split -c example/viai18n.config.js",
+    "padding": "node index.js padding -c example/viai18n.config.js",
     "start": "node index.js start -c example/viai18n.config.js",
     "web-build": "node index.js gen -c example/viai18n.config.js",
     "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js"
@@ -31,7 +32,7 @@
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
     "html-webpack-plugin": "^3.2.0",
-    "portfinder": "^1.0.13",
+    "ora": "^3.0.0",
     "script-ext-html-webpack-plugin": "^2.1.3",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.1.2",

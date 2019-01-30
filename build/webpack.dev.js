@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const webpackBase = require('./webpack.base');
 
 const parseConf = require('../src/parseConf');
-const options = parseConf('viai18n.config.js');
+const options = parseConf('./example/viai18n.config.js');
 
 module.exports = merge(webpackBase, {
   mode: 'development',

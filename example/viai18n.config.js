@@ -1,38 +1,36 @@
 module.exports = {
-  /** 从这些目录查询需要匹配的文件 */
+  /** find i18n files in these folders*/
   entry: {
     pages: './example/pages/',
   },
   output: {
-    html: 'static/viai18n-html', // 页面资源输出目录
-    locale: './example/locales' // 生成的多语言文件目录
+    html: 'static/viai18n-html',
+    locale: './example/locales'
   },
-  /** 语言的相关配置 */
+  /** language setting*/
   lang: {
-    base: 'zh_Hans_CN',
+    base: 'zh_Hans_CN', // base language
     // target: "ko_KP",
   },
-  /** 解析的相关配置 */
   resolve: {
-    postfix: '.messages.json', // 匹配的文件后缀
+    postfix: '.messages.json', // postfix of i18n file
   },
-  /** 过滤 */
+  /** filter something */
   exclude: {
-    translated: { // 是否过滤掉已经翻译过的
+    translated: {
       enable: true,
-      // lang: ["ja_JP"],
+      // lang: ["en_US"],
     },
     lang: [
-      'lastUpdateTime',
       "zh_Hant_HK"
     ],
     file: [
-      // /index\.messages\.json/
+      /exclude\.messages\.json/
     ],
     key: [
-      // "key1"
+      "key1",
       {
-        // file: "pages_test_name",
+        file: "pages/test/name.messages.json",
         lang: ["en_US"],
         value: ['namekey1'],
       },

@@ -1,15 +1,28 @@
 #!/usr/bin/env node
 
 const program = require('commander');
+const ora = require('ora');
 
 const genCommand = require('./src/command/gen');
-const devCommand = require('./src/command/dev');
 const parseConf = require('./src/parseConf');
 const collectCommand = require('./src/command/collect');
 const splitCommand = require('./src/command/split');
+const paddingCommand = require('./src/command/padding');
 
 const changeLang = require('./src/utils/changeLang');
 const changeHash = require('./src/utils/changeHash');
+
+async function showSpinner(text, callback) {
+  const spinner = ora(text);
+  spinner.start();
+  try {
+    await callback();
+    spinner.succeed();
+  } catch (error) {
+    spinner.fail();
+    throw error;
+  }
+}
 
 const pkg = require('./package.json');
 program.version(pkg.version);
@@ -22,46 +35,51 @@ program
   .command('split')
   .description('split locales')
   .action(function () {
-    console.log('split');
-    const config = parseConf(program.config);
-    splitCommand(config);
+    showSpinner('split', async function () {
+      const config = parseConf(program.config);
+      await splitCommand(config);
+    });
   });
 
 program
   .command('collect')
   .description('collect locales together')
   .action(function () {
-    console.log('collect');
-    const config = parseConf(program.config);
-    collectCommand(config)
+    showSpinner('collect', async function () {
+      const config = parseConf(program.config);
+      await collectCommand(config);
+    });
   });
 
 program
   .command('gen')
   .description('generate html for editing')
   .action(function () {
-    console.log('generate');
-    const config = parseConf(program.config);
-    genCommand(config);
+    showSpinner('generate', async function () {
+      const config = parseConf(program.config);
+      await genCommand(config);
+    });
   });
 
 program
-  .command('dev')
-  .description('develop')
+  .command('padding')
+  .description('padding untranslated texts with translated texts')
   .action(function () {
-    console.log('dev');
-    const config = parseConf(program.config);
-    devCommand(config);
+    showSpinner('padding', async function () {
+      const config = parseConf(program.config);
+      await paddingCommand(config);
+    });
   });
 
 program
   .command('start')
   .description('collect and generate')
   .action(async function () {
-    console.log('start');
-    const config = parseConf(program.config);
-    await collectCommand(config);
-    await genCommand(config);
+    showSpinner('start', async function () {
+      const config = parseConf(program.config);
+      await collectCommand(config);
+      await genCommand(config);
+    });
   });
 
 program
@@ -82,7 +100,7 @@ program
     });
   });
 
-  program
+program
   .command('changeHash')
   .description('change hash')
   .action(function () {
