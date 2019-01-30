@@ -1,6 +1,5 @@
 # viai18n-cli
-manage i18n files  and  provides a visual interface for translating.   
-it works along with [viai18n-loader](https://www.npmjs.com/package/viai18n-loader) frequently.
+manage i18n files  and  provides a visual interface for translating.it works along with [viai18n-loader](https://www.npmjs.com/package/viai18n-loader) frequently.
 ## Install
 
 ```sh
@@ -8,8 +7,7 @@ npm install viai18n-cli -g
 ```
 
 ## Usage
-you should have a config file before execute below commands.    
-Please refer to /example/viai18n.config.js.
+you should have a config file before execute below commands. please refer to /example/viai18n.config.js.
 
 + collect locales together
 ```
