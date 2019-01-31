@@ -7,10 +7,9 @@ const genCommand = require('./src/command/gen');
 const parseConf = require('./src/parseConf');
 const collectCommand = require('./src/command/collect');
 const splitCommand = require('./src/command/split');
-const paddingCommand = require('./src/command/padding');
-
-const changeLang = require('./src/utils/changeLang');
-const changeHash = require('./src/utils/changeHash');
+const fillCommand = require('./src/command/fill');
+const changeLangCommand = require('./src/command/changeLang');
+const changeKeyCommand = require('./src/command/changeKey');
 
 async function showSpinner(text, callback) {
   const spinner = ora(text);
@@ -25,11 +24,9 @@ async function showSpinner(text, callback) {
 }
 
 const pkg = require('./package.json');
-program.version(pkg.version);
+program.version(pkg.version, '-v, --version');
 program.option('-c, --config [file]', 'setup profile', 'viai18n.config.js');
-program.option('-l, --langs [items]', 'modify lang name', function (val) {
-  return val.split(',');
-}, []);
+
 
 program
   .command('split')
@@ -62,12 +59,12 @@ program
   });
 
 program
-  .command('padding')
-  .description('padding untranslated texts with translated texts')
+  .command('fill')
+  .description('fill with translated texts')
   .action(function () {
-    showSpinner('padding', async function () {
+    showSpinner('fill', async function () {
       const config = parseConf(program.config);
-      await paddingCommand(config);
+      await fillCommand(config);
     });
   });
 
@@ -83,32 +80,29 @@ program
   });
 
 program
-  .command('changeLang')
+  .command('changeLang <oldname> <newname>')
   .description('change lang name')
-  .action(function () {
-    if (program.langs.length < 2) {
-      console.error('need two arguments。eg: oldLang,newLang');
-      return;
-    }
-    console.log('changeLang');
-
-    const config = parseConf(program.config);
-    changeLang({
-      ...config,
-      oldLang: program.langs[0],
-      newLang: program.langs[1],
+  .action(function (oldname, newname, cmd) {
+    showSpinner('changeLang', async function () {
+      const config = parseConf(program.config);
+      await changeLangCommand({
+        ...config,
+        oldLang: oldname,
+        newLang: newname,
+      });
     });
   });
 
 program
-  .command('changeHash')
-  .description('change hash')
-  .action(function () {
-    console.log('changeHash');
-
-    const config = parseConf(program.config);
-    changeHash({
-      ...config,
+  .command('changeKey <input> <output> [lang]')
+  .description('change key name in hash')
+  .action(async function (input, output, lang, cmd) {
+    showSpinner('changeLang', async function () {
+      await changeKeyCommand({
+        lang: lang || "zh_Hans_CN",
+        input: input,
+        output: output,
+      });
     });
   });
 

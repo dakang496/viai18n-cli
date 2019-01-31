@@ -1,4 +1,5 @@
 const helper = require("../helper");
+const Path = require('path');
 const Fse = require('fs-extra');
 
 const REPEATED_KEY = '__repeated__';
@@ -62,7 +63,7 @@ function paddingTranslated(baseLangData, distLangData, translatedData) {
   return modified;
 }
 
-function paddingResolveFiles(resolveFiles, translatedData, langBase, langTarget) {
+function fillResolveFiles(resolveFiles, translatedData, langBase, langTarget) {
   resolveFiles.forEach((item) => {
     const originContent = item.originContent;
     const content = item.content;
@@ -106,10 +107,21 @@ function adjustRepeated(data) {
   return data;
 }
 
+function readLocale(dir) {
+  const data = {};
+  helper.traverse(dir, function (filePath, content) {
+    content = JSON.parse(content);
+    const lang = Path.basename(filePath, '.json');
+    data[lang] = Object.assign({}, data[lang], content);
+  }, /.json$/);
+  return data;
+}
+
 
 module.exports = {
   processLangDiff: processLangDiff,
   paddingTranslated: paddingTranslated,
-  paddingResolveFiles: paddingResolveFiles,
+  fillResolveFiles: fillResolveFiles,
   adjustRepeated: adjustRepeated,
+  readLocale: readLocale
 }

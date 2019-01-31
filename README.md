@@ -22,10 +22,10 @@ viai18n split
 ```
 viai18n gen
 ```
-+ padding untranslated texts with translated texts
++ fill with translated texts
 
 ```
-viai18n padding
+viai18n fill
 ```
 
 viai18n-cli provides a  set of commands. use ``` viai18n --help ``` to learn more.

@@ -21,7 +21,7 @@ module.exports = async function (options) {
       merged[lang] = actionHelper.processLangDiff(merged[langOptions.base], merged[lang], true);
     });
     const adjusted = actionHelper.adjustRepeated(merged);
-    actionHelper.paddingResolveFiles(resolveFiles, adjusted, langOptions.base, langOptions.target);
+    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, langOptions.target);
   });
   await controller.start();
 }
