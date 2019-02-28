@@ -20,8 +20,26 @@ module.exports = async function (options) {
       }
       merged[lang] = actionHelper.processLangDiff(merged[langOptions.base], merged[lang], true);
     });
+
     const adjusted = actionHelper.adjustRepeated(merged);
-    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, langOptions.target);
+    const useLang = options.__useLang;
+    const effectLangs = options.__effectLangs || [];
+    const empty = (effectLangs.length === 0);
+
+    if (useLang) {
+      const langs = Object.keys(adjusted).filter((lang) => {
+        if (lang === langOptions.base) {
+          return false;
+        }
+        return empty || effectLangs.find((l) => {
+          return l === lang
+        })
+      });
+      langs.forEach((lang) => {
+        adjusted[lang] = adjusted[useLang];
+      });
+    }
+    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, empty ? langOptions.target : undefined);
   });
   await controller.start();
 }

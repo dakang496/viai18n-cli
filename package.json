@@ -1,9 +1,10 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "help": "node index.js -h",
     "collect": "node index.js collect -c example/viai18n.config.js",
     "gen": "node index.js gen -c example/viai18n.config.js",
     "split": "node index.js split -c example/viai18n.config.js",
