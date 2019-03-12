@@ -1,11 +1,11 @@
 module.exports = {
   /** find i18n files in these folders*/
   entry: {
-    pages: './pages/',
+    pages: './example/pages/',
   },
   output: {
     html: 'static/viai18n-html',
-    locale: './locales'
+    locale: './example/locales'
   },
   /** language setting*/
   lang: {

@@ -62,7 +62,6 @@ program
   .command('fill [useLang] [effectLangs...]')
   .description('fill with translated texts')
   .action(function (useLang, effectLangs) {
-    console.log(effectLangs);
     showSpinner('fill', async function () {
       const config = parseConf(program.config);
       await fillCommand({
