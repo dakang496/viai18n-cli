@@ -27,6 +27,11 @@ viai18n gen
 ```
 viai18n fill
 ```
++ clean invalid text which is deprecated
+
+```
+viai18n clean
+```
 
 viai18n-cli provides a  set of commands. use ``` viai18n --help ``` to learn more.
 

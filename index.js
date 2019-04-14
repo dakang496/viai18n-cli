@@ -10,6 +10,7 @@ const splitCommand = require('./src/command/split');
 const fillCommand = require('./src/command/fill');
 const changeLangCommand = require('./src/command/changeLang');
 const changeKeyCommand = require('./src/command/changeKey');
+const cleanCommand = require('./src/command/clean');
 
 async function showSpinner(text, callback) {
   const spinner = ora(text);
@@ -106,6 +107,24 @@ program
         lang: lang || "zh_Hans_CN",
         input: input,
         output: output,
+      });
+    });
+  });
+
+program
+  .command('clean [regExp]')
+  .description('clean invalid text which is deprecated')
+  .option('-k, --key', 'remove key')
+  .option('-t, --text', 'remove text')
+  .action(async function (regExp, cmd) {
+    showSpinner('clean', async function () {
+      const config = parseConf(program.config);
+      const regExpStr = regExp || "@DEPRECATED@";
+      const matchWhat = (cmd.text && "text") || "key"
+      await cleanCommand({
+        ...config,
+        __regExp: regExpStr,
+        __matchWhat: matchWhat,
       });
     });
   });
