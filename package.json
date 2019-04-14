@@ -1,6 +1,6 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "split": "node index.js split -c viai18n.config.js",
     "fill": "node index.js fill -c viai18n.config.js",
     "start": "node index.js start -c viai18n.config.js",
+    "clean": "node index.js clean -c viai18n.config.js",
     "web-build": "node index.js gen -c viai18n.config.js",
     "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js"
   },
@@ -21,6 +22,9 @@
     "url": "https://github.com/dakang496/viai18n-cli.git"
   },
   "author": "dakang496",
+  "contributors":[
+    "aiyld"
+  ],
   "license": "MIT",
   "dependencies": {
     "babel-core": "^6.22.1",
