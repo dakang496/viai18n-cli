@@ -239,6 +239,7 @@
       <div class="flex"></div>
       <div class="curtip">
         <div class="flex"></div>
+        <div>Total translation: {{totalWordCount}}</div>
         <div v-if="totalRemain > 0" style="color: red;">
           Translation remains: <span>{{totalRemain}}</span>
         </div>
@@ -329,6 +330,28 @@
             curItem = curItem.toString().replace(/\,|\.|，|。|\!|\?/g, "");
 
             if (this.selectLang.indexOf("zh") === 0 || this.selectLang === "ja_JP") {
+              total += curItem.length;
+            } else {
+              curItem.toString().split(" ").forEach((val)=>{
+                if(val) {
+                  total++;
+                }
+              });
+            }
+          }
+        }
+
+        return total;
+      },
+      totalWordCount: function() {
+        var total = 0;
+
+        for (var field in this.originLocales[this.baseLang]) {
+          for (var subField in this.originLocales[this.baseLang][field]) {
+            var curItem = this.originLocales[this.baseLang][field][subField];
+            curItem = curItem.toString().replace(/\,|\.|，|。|\!|\?/g, "");
+
+            if (this.baseLang.indexOf("zh") === 0 || this.baseLang === "ja_JP") {
               total += curItem.length;
             } else {
               curItem.toString().split(" ").forEach((val)=>{
