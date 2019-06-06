@@ -123,5 +123,6 @@ module.exports = {
   paddingTranslated: paddingTranslated,
   fillResolveFiles: fillResolveFiles,
   adjustRepeated: adjustRepeated,
-  readLocale: readLocale
+  readLocale: readLocale,
+  REPEATED_KEY: REPEATED_KEY
 }

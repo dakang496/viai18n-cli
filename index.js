@@ -41,11 +41,15 @@ program
 
 program
   .command('collect')
+  .option('-n, --nokey', 'remove key')
   .description('collect locales together')
-  .action(function () {
+  .action(function (cmd) {
     showSpinner('collect', async function () {
       const config = parseConf(program.config);
-      await collectCommand(config);
+      await collectCommand({
+        ...config,
+        __nokey: cmd.nokey
+      });
     });
   });
 
