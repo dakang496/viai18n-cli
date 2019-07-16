@@ -6,8 +6,7 @@ const Fse = require('fs-extra');
 const Path = require('path');
 const actionHelper = require('./helper');
 
-module.exports = async function (context, data) {
-  const options = context.options;
+module.exports = async function (options, data) {
   const locale = options.output.locale;
   if (!locale) {
     return;

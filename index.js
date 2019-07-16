@@ -11,6 +11,7 @@ const fillCommand = require('./src/command/fill');
 const changeLangCommand = require('./src/command/changeLang');
 const changeKeyCommand = require('./src/command/changeKey');
 const cleanCommand = require('./src/command/clean');
+const transCommand = require('./src/command/trans');
 
 async function showSpinner(text, callback) {
   const spinner = ora(text);
@@ -130,6 +131,16 @@ program
         __regExp: regExpStr,
         __matchWhat: matchWhat,
       });
+    });
+  });
+
+program
+  .command('trans')
+  .description('translate text by your program')
+  .action(function () {
+    showSpinner('trans', async function () {
+      const config = parseConf(program.config);
+      await transCommand(config);
     });
   });
 
