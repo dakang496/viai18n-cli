@@ -29,7 +29,7 @@ module.exports = async function (options) {
       })
     };
     const adjusted = actionHelper.adjustRepeated(merged);
-    await outputCollect(context, adjusted);
+    await outputCollect(context.options, adjusted);
   });
   await controller.start();
 }
