@@ -37,4 +37,6 @@ viai18n-cli provides a  set of commands. use ``` viai18n --help ``` to learn mor
 
 ## Changelog
 
-- v0.1.0 Attribute `config.exclude.file` rename to `config.exclude.filePattern` which supports glob pattern.
+- v0.0.15
+  1. Attribute `config.exclude.file` rename to `config.exclude.filePattern` which supports glob pattern.
+  2. `config.exclude.key[].file` support glob pattern.
