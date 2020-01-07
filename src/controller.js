@@ -36,7 +36,7 @@ Controller.prototype.start = async function () {
 Controller.prototype.run = async function () {
   const entry = this.options.entry;
   const fileRegx = this.options._fileRegx;
-  const fileFilter = this.options.exclude.file;
+  const filePattern = this.options.exclude.filePattern;
 
 
   Object.keys(entry).forEach((name) => {
@@ -66,7 +66,7 @@ Controller.prototype.run = async function () {
         });
         this.resolveFiles.push(data);
       }
-    }, fileRegx, fileFilter);
+    }, fileRegx, filePattern);
   });
 
   for (let i = 0; i < this.completeHooks.length; i++) {

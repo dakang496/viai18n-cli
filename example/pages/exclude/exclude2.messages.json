@@ -1,0 +1,14 @@
+{
+    "en_US": {
+        "exclude": "zh-exclude"
+    },
+    "ko_KP": {
+        "exclude": "zh-exclude"
+    },
+    "zh_Hans_CN": {
+        "exclude": "zh-exclude"
+    },
+    "zh_Hant_HK": {
+        "exclude": "zh-exclude"
+    }
+}
