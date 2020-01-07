@@ -31,7 +31,7 @@ module.exports = {
     key: [
       "key1",
       {
-        file: "pages/test/name.messages.json",
+        file: "pages/test/*.messages.json",
         lang: ["en_US"],
         value: ['namekey1'],
       },
