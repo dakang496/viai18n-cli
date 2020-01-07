@@ -25,13 +25,13 @@ module.exports = {
     lang: [
       "zh_Hant_HK"
     ],
-    file: [
-      /exclude\.messages\.json/
+    filePattern: [
+      '/example/pages/exclude/*.messages.json', // glob pattern, relative path base cwd of the process
     ],
     key: [
       "key1",
       {
-        file: "pages/test/name.messages.json",
+        file: "pages/test/*.messages.json",
         lang: ["en_US"],
         value: ['namekey1'],
       },

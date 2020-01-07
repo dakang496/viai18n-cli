@@ -3,6 +3,8 @@
  */
 
 const Path = require('path');
+const Minimatch = require('minimatch');
+
 function shouldFilter(filters, value, file, lang) {
   filters = filters || [];
   return filters.some((filter) => {
@@ -12,7 +14,7 @@ function shouldFilter(filters, value, file, lang) {
       return filter.test(value);
     } else if (filter && typeof filter === 'object') {
       let status = 0;
-      if (!filter.file || filter.file === file) {
+      if (!filter.file || Minimatch(file, filter.file)) {
         status++;
       }
       if (!filter.lang || (filter.lang && Array.isArray(filter.lang) && filter.lang.indexOf(lang) !== -1)) {

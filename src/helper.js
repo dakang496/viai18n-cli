@@ -1,7 +1,8 @@
 const Fse = require('fs-extra');
 const Path = require('path');
+const Minimatch = require('minimatch');
 
-function traverse(dir, handler, match, exclude) {
+function traverse(dir, handler, match, excludePattern) {
   const stats = Fse.statSync(dir)
   if (!stats || !stats.isDirectory()) {
     return false;
@@ -10,10 +11,10 @@ function traverse(dir, handler, match, exclude) {
   const files = Fse.readdirSync(dir) || [];
   files.forEach((file) => {
     const filePath = Path.resolve(dir, file);
-    const result = traverse(filePath, handler, match, exclude);
+    const result = traverse(filePath, handler, match, excludePattern);
     if (!result) { // not directory
-      let filterable = !match || !match.test(filePath) || exclude && exclude.some((regx) => {
-        return regx.test(filePath);
+      let filterable = !match || !match.test(filePath) || excludePattern && excludePattern.some((pattern) => {
+        return Minimatch(filePath, Path.join(process.cwd(), pattern));
       });
       if (filterable) {
         return;
