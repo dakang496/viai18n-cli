@@ -3,7 +3,7 @@ const Path = require('path');
 const Minimatch = require('minimatch');
 
 function traverse(dir, handler, match, excludePattern) {
-  const stats = Fse.statSync(dir)
+  const stats = Fse.statSync(dir);
   if (!stats || !stats.isDirectory()) {
     return false;
   }

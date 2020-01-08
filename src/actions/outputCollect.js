@@ -1,17 +1,26 @@
 /**
- * 输出📱处理后的内容
+ * 输出处理后的内容
  */
 
 const Fse = require('fs-extra');
 const Path = require('path');
 const actionHelper = require('./helper');
 
+async function clearDirWithFilter(dir, filterFn) {
+  Fse.mkdirpSync(dir);
+  Fse.readdir(dir).then(files => {
+    return Promise.all(files.filter(filterFn).map(file => Fse.remove(file)));
+  });
+}
+
 module.exports = async function (options, data) {
   const locale = options.output.locale;
   if (!locale) {
     return;
   }
-  await Fse.remove(locale);
+  await clearDirWithFilter(locale, file => {
+    return (/(^|\/)\.[^\/\.]/g).test(file); // 清理目录，排除隐藏文件/文件夹
+  });
   if (!options.__nokey) {
     Object.keys(data).forEach((lang) => {
       const content = JSON.stringify(data[lang], null, 4);
