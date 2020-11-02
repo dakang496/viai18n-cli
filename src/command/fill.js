@@ -10,16 +10,22 @@ module.exports = async function (options) {
   const controller = new Controller(options);
   controller.resolveFilter(filterProperty);
   controller.onComplete(async (context, resolveFiles) => {
+
     const merged = mergeFile(context, resolveFiles);
 
-    /** 去掉没翻译的 */
     const langOptions = options.lang;
-    Object.keys(merged).forEach((lang) => {
-      if (lang === langOptions.base) {
-        return;
-      }
-      merged[lang] = actionHelper.processLangDiff(merged[langOptions.base], merged[lang], true);
-    });
+    const force = options.__force;
+
+    /** 去掉没翻译的 */
+    if(!force){
+    
+      Object.keys(merged).forEach((lang) => {
+        if (lang === langOptions.base) {
+          return;
+        }
+        merged[lang] = actionHelper.processLangDiff(merged[langOptions.base], merged[lang], true);
+      });
+    }
 
     const adjusted = actionHelper.adjustRepeated(merged);
     const useLang = options.__useLang;
@@ -39,7 +45,9 @@ module.exports = async function (options) {
         adjusted[lang] = adjusted[useLang];
       });
     }
-    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, empty ? langOptions.target : undefined);
+    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, empty ? langOptions.target : undefined,{
+      force:force
+    });
   });
   await controller.start();
 }
