@@ -118,9 +118,10 @@ function fitRegx(str) {
 function sortObjectByKey(unordered) {
   const ordered = {};
   Object.keys(unordered).sort().forEach(function (key) {
-    if (typeof unordered[key] === 'string') {
+    const type = typeof unordered[key];
+    if (type === 'string') {
       ordered[key] = unordered[key];
-    } else {
+    } else if (unordered[key] && type === 'object') {
       ordered[key] = sortObjectByKey(unordered[key]);
     }
   });
