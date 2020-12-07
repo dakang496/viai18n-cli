@@ -92,8 +92,8 @@ program
   });
 
 program
-  .command('changeLang <oldname> <newname>')
-  .description('change lang name')
+  .command('changeLang <oldname> [newname]')
+  .description('change or remove lang name')
   .action(function (oldname, newname, cmd) {
     showSpinner('changeLang', async function () {
       const config = parseConf(program.config);

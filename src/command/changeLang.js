@@ -6,7 +6,7 @@ const helper = require('../helper');
 const Fse = require('fs-extra');
 
 module.exports = async function (options) {
-  if (!options.oldLang || !options.newLang) {
+  if (!options.oldLang) {
     console.error('incorrect arguments');
     return;
   }
@@ -19,7 +19,9 @@ module.exports = async function (options) {
         console.warn(`${item.filePath}: not exist ${options.oldLang}`);
         return;
       }
-      originContent[options.newLang] = value;
+      if(options.newLang){
+        originContent[options.newLang] = value;
+      }
       delete originContent[options.oldLang];
       const sorted = helper.sortObjectByKey(originContent);
       Fse.outputFileSync(item.filePath, JSON.stringify(sorted, null, 4));
