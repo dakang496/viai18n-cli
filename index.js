@@ -67,13 +67,15 @@ program
 program
   .command('fill [useLang] [effectLangs...]')
   .description('fill with translated texts')
-  .action(function (useLang, effectLangs) {
+  .option('-f, --force', 'fill forcedly even if it has translated')
+  .action(function (useLang, effectLangs,cmd) {
     showSpinner('fill', async function () {
       const config = parseConf(program.config);
       await fillCommand({
         ...config,
         __useLang: useLang,
-        __effectLangs: effectLangs
+        __effectLangs: effectLangs,
+        __force:cmd.force
       });
     });
   });
@@ -90,8 +92,8 @@ program
   });
 
 program
-  .command('changeLang <oldname> <newname>')
-  .description('change lang name')
+  .command('changeLang <oldname> [newname]')
+  .description('change or remove lang name')
   .action(function (oldname, newname, cmd) {
     showSpinner('changeLang', async function () {
       const config = parseConf(program.config);

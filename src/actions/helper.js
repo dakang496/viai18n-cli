@@ -49,21 +49,26 @@ function processLangDiff(baseLangData, distLangData, onlyDiff) {
   return result;
 }
 
-function paddingTranslated(baseLangData, distLangData, translatedData) {
+function paddingTranslated(baseLangData, distLangData, translatedData, options) {
   let modified = false;
   Object.keys(distLangData).forEach((key) => {
-    if (!translatedData[key] || translatedData[key] === baseLangData[key] || translatedData[key] === distLangData[key]) {
-      return;
-    }
-    if (!baseLangData[key] || baseLangData[key] === distLangData[key]) {
+    if(options && options.force){
       distLangData[key] = translatedData[key];
       modified = true
+    }else{
+      if (!translatedData[key] || translatedData[key] === baseLangData[key] || translatedData[key] === distLangData[key]) {
+        return;
+      }
+      if (!baseLangData[key] || baseLangData[key] === distLangData[key]) {
+        distLangData[key] = translatedData[key];
+        modified = true
+      }
     }
   });
   return modified;
 }
 
-function fillResolveFiles(resolveFiles, translatedData, langBase, langTarget) {
+function fillResolveFiles(resolveFiles, translatedData, langBase, langTarget, options) {
   resolveFiles.forEach((item) => {
     const originContent = item.originContent;
     const content = item.content;
@@ -79,7 +84,7 @@ function fillResolveFiles(resolveFiles, translatedData, langBase, langTarget) {
       if (!srcLangData) { // 没有该语言数据
         return;
       }
-      const modified = paddingTranslated(content[langBase], content[lang], srcLangData);
+      const modified = paddingTranslated(content[langBase], content[lang], srcLangData, options);
       if (modified) {
         shouldUpdate = true;
         Object.assign(originContent[lang], content[lang]);

@@ -10,18 +10,24 @@ module.exports = async function (options) {
   const controller = new Controller(options);
   controller.resolveFilter(filterProperty);
   controller.onComplete(async (context, resolveFiles) => {
+
     const merged = mergeFile(context, resolveFiles);
 
-    /** 去掉没翻译的 */
     const langOptions = options.lang;
-    Object.keys(merged).forEach((lang) => {
-      if (lang === langOptions.base) {
-        return;
-      }
-      merged[lang] = actionHelper.processLangDiff(merged[langOptions.base], merged[lang], true);
-    });
+    const force = options.__force;
 
-    const adjusted = actionHelper.adjustRepeated(merged);
+    /** 去掉没翻译的 */
+    if (!force) {
+
+      Object.keys(merged).forEach((lang) => {
+        if (lang === langOptions.base) {
+          return;
+        }
+        merged[lang] = actionHelper.processLangDiff(merged[langOptions.base], merged[lang], true);
+      });
+    }
+
+    let adjusted = actionHelper.adjustRepeated(merged);
     const useLang = options.__useLang;
     const effectLangs = options.__effectLangs || [];
     const empty = (effectLangs.length === 0);
@@ -35,11 +41,18 @@ module.exports = async function (options) {
           return l === lang
         })
       });
-      langs.forEach((lang) => {
-        adjusted[lang] = adjusted[useLang];
-      });
+      if (langs.length > 0) {
+        adjusted = langs.reduce(function (newAdjusted, lang) {
+          if (adjusted[useLang]) {
+            newAdjusted[lang] = adjusted[useLang];
+          }
+          return newAdjusted;
+        }, {});
+      }
     }
-    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, empty ? langOptions.target : undefined);
+    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, empty ? langOptions.target : undefined, {
+      force: force
+    });
   });
   await controller.start();
 }
