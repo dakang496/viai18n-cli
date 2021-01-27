@@ -94,6 +94,25 @@ module.exports = {
         console.error(error);
       }
     }
+  },
+  gen: {
+    base: "zh_Hans_CN",
+    target: "en_US", // html option
+    excelFile: "./locales.xlsx", // excel option
+    langs: [
+      {
+        name: "zh_Hans_CN",
+        label: "中文",
+        filled: true, // excel option
+      },
+      {
+        name: "en_US",
+        label: "English",
+      },
+      {
+        name: "ko_KP",
+        label: "한국어"
+      },
+    ],
   }
-
 }

@@ -35,7 +35,8 @@ program
   .description('split locales')
   .action(function () {
     showSpinner('split', async function () {
-      const config = parseConf(program.config);
+      const opts = program.opts();
+      const config = parseConf(opts.config);
       await splitCommand(config);
     });
   });
@@ -44,23 +45,29 @@ program
   .command('collect')
   .option('-n, --nokey', 'remove key')
   .description('collect locales together')
-  .action(function (cmd) {
+  .action(function (options) {
+    const opts = program.opts();
     showSpinner('collect', async function () {
-      const config = parseConf(program.config);
+      const config = parseConf(opts.config);
       await collectCommand({
         ...config,
-        __nokey: cmd.nokey
+        __nokey: options.nokey
       });
     });
   });
-
 program
   .command('gen')
-  .description('generate html for editing')
-  .action(function () {
+  .description('generate html or excel for translating')
+  .addOption(new program.Option('-t, --type [type]', 'type of output', 'html').choices(['html', 'excel']))
+  .action(function (options) {
     showSpinner('generate', async function () {
-      const config = parseConf(program.config);
-      await genCommand(config);
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await genCommand({
+        ...config,
+        __outputType: options.type
+      });
     });
   });
 
@@ -68,14 +75,16 @@ program
   .command('fill [useLang] [effectLangs...]')
   .description('fill with translated texts')
   .option('-f, --force', 'fill forcedly even if it has translated')
-  .action(function (useLang, effectLangs,cmd) {
+  .action(function (useLang, effectLangs, options) {
+    const opts = program.opts();
+
     showSpinner('fill', async function () {
-      const config = parseConf(program.config);
+      const config = parseConf(opts.config);
       await fillCommand({
         ...config,
         __useLang: useLang,
         __effectLangs: effectLangs,
-        __force:cmd.force
+        __force: options.force
       });
     });
   });
@@ -85,7 +94,8 @@ program
   .description('collect and generate')
   .action(async function () {
     showSpinner('start', async function () {
-      const config = parseConf(program.config);
+      const opts = program.opts();
+      const config = parseConf(opts.config);
       await collectCommand(config);
       await genCommand(config);
     });
@@ -94,9 +104,10 @@ program
 program
   .command('changeLang <oldname> [newname]')
   .description('change or remove lang name')
-  .action(function (oldname, newname, cmd) {
+  .action(function (oldname, newname) {
     showSpinner('changeLang', async function () {
-      const config = parseConf(program.config);
+      const opts = program.opts();
+      const config = parseConf(opts.config);
       await changeLangCommand({
         ...config,
         oldLang: oldname,
@@ -108,7 +119,7 @@ program
 program
   .command('changeKey <input> <output> [lang]')
   .description('change key name in hash')
-  .action(async function (input, output, lang, cmd) {
+  .action(async function (input, output, lang) {
     showSpinner('changeLang', async function () {
       await changeKeyCommand({
         lang: lang || "zh_Hans_CN",
@@ -123,11 +134,12 @@ program
   .description('clean invalid text which is deprecated')
   .option('-k, --key', 'remove key')
   .option('-t, --text', 'remove text')
-  .action(async function (regExp, cmd) {
+  .action(async function (regExp, options) {
     showSpinner('clean', async function () {
-      const config = parseConf(program.config);
+      const opts = program.opts();
+      const config = parseConf(opts.config);
       const regExpStr = regExp || "@DEPRECATED@";
-      const matchWhat = (cmd.text && "text") || "key"
+      const matchWhat = (options.text && "text") || "key"
       await cleanCommand({
         ...config,
         __regExp: regExpStr,
@@ -141,7 +153,8 @@ program
   .description('translate text by your program')
   .action(function () {
     showSpinner('trans', async function () {
-      const config = parseConf(program.config);
+      const opts = program.opts();
+      const config = parseConf(opts.config);
       await transCommand(config);
     });
   });
