@@ -1,43 +1,12 @@
-const webpack = require("webpack");
-const webpackProd = require('../../build/webpack.prod');
-const merge = require('webpack-merge');
+const genHtml = require("./gen/html");
+const genExcel = require("./gen/excel");
 
-module.exports = function (options) {
+module.exports = async function (options) {
+  const outputType = options.__outputType;
 
-  const webpackConf = merge(webpackProd, {
-    output: {
-      path: options.output.html,
-    },
-    plugins: [
-      new webpack.DefinePlugin({
-        LANG_TARGET: JSON.stringify(options.lang.target),
-        LANG_BASE: JSON.stringify(options.lang.base),
-        PARSE_DUPLICATE: false,
-      }),
-    ],
-    resolve: {
-      alias: {
-        '@': options.output.locale,
-      },
-    },
-
-  });
-
-  webpack(webpackConf, (err, stats) => {
-    if (err) {
-      console.error(err.stack || err);
-      if (err.details) {
-        console.error(err.details);
-      }
-      return;
-    }
-    const info = stats.toJson();
-    if (stats.hasErrors()) {
-      console.error(info.errors);
-    }
-    if (stats.hasWarnings()) {
-      console.warn(info.warnings);
-    }
-
-  });
+  if (outputType === "excel") {
+    await genExcel(options);
+  } else {
+    genHtml(options);
+  }
 }

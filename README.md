@@ -17,7 +17,7 @@ viai18n collect
 ```
 viai18n split
 ```
-+ generate html for translating
++ generate html or excel for translating
 
 ```
 viai18n gen
