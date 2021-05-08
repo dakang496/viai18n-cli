@@ -3,7 +3,7 @@ const helper = require('./helper');
 function createDefaults() {
   return {
     entry: { //json文件来源目录
-      pages: './pages/',
+      // pages: './pages/',
     },
     output: {
       html: 'static/viai18n-html',
