@@ -33,25 +33,32 @@ program.option('-c, --config [file]', 'setup profile', 'viai18n.config.js');
 program
   .command('split')
   .description('split locales')
-  .action(function () {
+  .option('-f, --force', 'split forcedly even if it has translated')
+  .action(function (options) {
     showSpinner('split', async function () {
       const opts = program.opts();
       const config = parseConf(opts.config);
-      await splitCommand(config);
+      await splitCommand({
+        ...config,
+        __force: options.force,
+      });
     });
   });
 
 program
   .command('collect')
   .option('-n, --nokey', 'remove key')
+  .addOption(new program.Option('-p, --params <params...>', 'params of your program'))
   .description('collect locales together')
   .action(function (options) {
     const opts = program.opts();
     showSpinner('collect', async function () {
       const config = parseConf(opts.config);
+
       await collectCommand({
         ...config,
-        __nokey: options.nokey
+        __nokey: options.nokey,
+        __params: options.params
       });
     });
   });
@@ -75,6 +82,7 @@ program
   .command('fill [useLang] [effectLangs...]')
   .description('fill with translated texts')
   .option('-f, --force', 'fill forcedly even if it has translated')
+  .option('-b, --baseLang', 'determine whether it is translated')
   .action(function (useLang, effectLangs, options) {
     const opts = program.opts();
 
@@ -84,7 +92,8 @@ program
         ...config,
         __useLang: useLang,
         __effectLangs: effectLangs,
-        __force: options.force
+        __force: options.force,
+        __baseLang: options.baseLang
       });
     });
   });

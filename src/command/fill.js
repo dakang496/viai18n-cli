@@ -15,15 +15,16 @@ module.exports = async function (options) {
 
     const langOptions = options.lang;
     const force = options.__force;
+    const baseLang = options.__baseLang || langOptions.base;
 
     /** 去掉没翻译的 */
     if (!force) {
 
       Object.keys(merged).forEach((lang) => {
-        if (lang === langOptions.base) {
+        if (lang === baseLang) {
           return;
         }
-        merged[lang] = actionHelper.processLangDiff(merged[langOptions.base], merged[lang], true);
+        merged[lang] = actionHelper.processLangDiff(merged[baseLang], merged[lang], true);
       });
     }
 
@@ -34,7 +35,7 @@ module.exports = async function (options) {
 
     if (useLang) {
       const langs = Object.keys(adjusted).filter((lang) => {
-        if (lang === langOptions.base) {
+        if (lang === baseLang) {
           return false;
         }
         return empty || effectLangs.find((l) => {
@@ -50,7 +51,7 @@ module.exports = async function (options) {
         }, {});
       }
     }
-    actionHelper.fillResolveFiles(resolveFiles, adjusted, langOptions.base, empty ? langOptions.target : undefined, {
+    actionHelper.fillResolveFiles(resolveFiles, adjusted, baseLang, empty ? langOptions.target : undefined, {
       force: force
     });
   });

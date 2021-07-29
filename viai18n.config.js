@@ -114,5 +114,15 @@ module.exports = {
         label: "한국어"
       },
     ],
+  },
+  collect: {
+    async fetch(msg) {
+      const value = msg || "Hello world";
+      return {
+        en_US: {
+          "namekey2": value,
+        }
+      }
+    }
   }
 }

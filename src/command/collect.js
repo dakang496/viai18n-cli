@@ -5,6 +5,18 @@ const outputCollect = require('../actions/outputCollect');
 const actionHelper = require('../actions/helper');
 
 module.exports = async function (options) {
+  const params = options.__params;
+  const collectOptions = options.collect || {};
+
+  if (params && params[0] && collectOptions.fetch) {
+    const data = await collectOptions.fetch.apply(null, params);
+    await outputCollect(options, data);
+  } else {
+    collectLocal(options);
+  }
+}
+
+async function collectLocal(options) {
   const controller = new Controller(options);
   controller.resolveFilter(filterProperty);
 
