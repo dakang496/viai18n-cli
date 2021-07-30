@@ -1,6 +1,6 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "collect-nokey": "node index.js collect  --nokey -c viai18n.config.js",
     "gen": "node index.js gen -c viai18n.config.js",
     "split": "node index.js split -c viai18n.config.js",
+    "split-p": "node index.js split -c viai18n.config.js -p ./example/pages/test -f",
     "fill": "node index.js fill -c viai18n.config.js",
     "start": "node index.js start -c viai18n.config.js",
     "clean": "node index.js clean -c viai18n.config.js",

@@ -43,7 +43,7 @@ function createDefaults() {
     },
   }
 };
-module.exports = function (filename) {
+module.exports = function (filename, overrides) {
   let custom = {};
   try {
     const p = path.resolve(filename);
@@ -52,7 +52,10 @@ module.exports = function (filename) {
     console.error(error);
   }
   try {
-    const merge = helper.merge(createDefaults(), custom);
+    let merge = helper.merge(createDefaults(), custom);
+    if (overrides) {
+      merge = Object.assign(merge, overrides);
+    }
     const entry = merge.entry;
     Object.keys(entry).forEach((key) => {
       entry[key] = path.resolve(entry[key]);

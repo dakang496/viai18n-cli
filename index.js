@@ -29,15 +29,27 @@ const pkg = require('./package.json');
 program.version(pkg.version, '-v, --version');
 program.option('-c, --config [file]', 'setup profile', 'viai18n.config.js');
 
+const createEntry = function (paths) {
+  return paths ? paths.reduce((entry, path, index) => {
+    entry[index] = path;
+    return entry;
+  }, {}) : undefined;
+}
+
 
 program
   .command('split')
   .description('split locales')
   .option('-f, --force', 'split forcedly even if it has translated')
+  .addOption(new program.Option('-p, --paths <paths...>', 'paths of entry'))
   .action(function (options) {
     showSpinner('split', async function () {
+      const entry = createEntry(options.paths);
+      const overrides = entry ? { entry: entry } : undefined;
+
       const opts = program.opts();
-      const config = parseConf(opts.config);
+      const config = parseConf(opts.config, overrides);
+
       await splitCommand({
         ...config,
         __force: options.force,
@@ -48,17 +60,20 @@ program
 program
   .command('collect')
   .option('-n, --nokey', 'remove key')
-  .addOption(new program.Option('-p, --params <params...>', 'params of your program'))
+  .addOption(new program.Option('-a, --arguments <arguments...>', 'arguments of your program'))
+  .addOption(new program.Option('-p, --paths <paths...>', 'paths of entry'))
   .description('collect locales together')
   .action(function (options) {
     const opts = program.opts();
     showSpinner('collect', async function () {
-      const config = parseConf(opts.config);
+      const entry = createEntry(options.paths);
+      const overrides = entry ? { entry: entry } : undefined;
+      const config = parseConf(opts.config, overrides);
 
       await collectCommand({
         ...config,
         __nokey: options.nokey,
-        __params: options.params
+        __arguments: options.arguments
       });
     });
   });
@@ -83,11 +98,14 @@ program
   .description('fill with translated texts')
   .option('-f, --force', 'fill forcedly even if it has translated')
   .option('-b, --baseLang', 'determine whether it is translated')
+  .addOption(new program.Option('-p, --paths <paths...>', 'paths of entry'))
   .action(function (useLang, effectLangs, options) {
     const opts = program.opts();
 
     showSpinner('fill', async function () {
-      const config = parseConf(opts.config);
+      const entry = createEntry(options.paths);
+      const overrides = entry ? { entry: entry } : undefined;
+      const config = parseConf(opts.config, overrides);
       await fillCommand({
         ...config,
         __useLang: useLang,
@@ -159,11 +177,14 @@ program
 
 program
   .command('trans')
+  .addOption(new program.Option('-p, --paths <paths...>', 'paths of entry'))
   .description('translate text by your program')
   .action(function () {
     showSpinner('trans', async function () {
+      const entry = createEntry(options.paths);
+      const overrides = entry ? { entry: entry } : undefined;
       const opts = program.opts();
-      const config = parseConf(opts.config);
+      const config = parseConf(opts.config, overrides);
       await transCommand(config);
     });
   });

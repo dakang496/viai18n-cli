@@ -5,11 +5,11 @@ const outputCollect = require('../actions/outputCollect');
 const actionHelper = require('../actions/helper');
 
 module.exports = async function (options) {
-  const params = options.__params;
+  const arguments = options.__arguments;
   const collectOptions = options.collect || {};
 
-  if (params && params[0] && collectOptions.fetch) {
-    const data = await collectOptions.fetch.apply(null, params);
+  if (arguments && arguments[0] && collectOptions.fetch) {
+    const data = await collectOptions.fetch.apply(null, arguments);
     await outputCollect(options, data);
   } else {
     collectLocal(options);

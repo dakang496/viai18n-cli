@@ -52,10 +52,12 @@ function processLangDiff(baseLangData, distLangData, onlyDiff) {
 function paddingTranslated(baseLangData, distLangData, translatedData, options) {
   let modified = false;
   Object.keys(distLangData).forEach((key) => {
-    if(options && options.force){
-      distLangData[key] = translatedData[key];
-      modified = true
-    }else{
+    if (options && options.force) {
+      if (translatedData[key]) {
+        distLangData[key] = translatedData[key];
+        modified = true
+      }
+    } else {
       if (!translatedData[key] || translatedData[key] === baseLangData[key] || translatedData[key] === distLangData[key]) {
         return;
       }
