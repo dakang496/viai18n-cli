@@ -124,6 +124,26 @@ function readLocale(dir) {
   return data;
 }
 
+function isLangValid(options, distLang) {
+  const langs = options.__langs;
+  if (langs) {
+    return langs.find((lang) => {
+      return lang === distLang
+    });
+  }
+
+  const excludes = options.exclude && options.exclude.lang;
+  if (excludes) {
+    const match = excludes.find((lang) => {
+      return lang === distLang
+    });
+    if (match) {
+      return false;
+    }
+  }
+  return true;
+}
+
 
 module.exports = {
   processLangDiff: processLangDiff,
@@ -131,5 +151,6 @@ module.exports = {
   fillResolveFiles: fillResolveFiles,
   adjustRepeated: adjustRepeated,
   readLocale: readLocale,
+  isLangValid: isLangValid,
   REPEATED_KEY: REPEATED_KEY
 }

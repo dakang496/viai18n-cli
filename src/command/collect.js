@@ -10,7 +10,14 @@ module.exports = async function (options) {
 
   if (arguments && arguments[0] && collectOptions.fetch) {
     const data = await collectOptions.fetch.apply(null, arguments);
-    await outputCollect(options, data);
+
+    const adjusted = Object.keys(data).reduce((result, lang) => {
+      if (actionHelper.isLangValid(options, lang)) {
+        result[lang] = data[lang]
+      }
+      return result;
+    }, {});
+    await outputCollect(options, adjusted);
   } else {
     collectLocal(options);
   }

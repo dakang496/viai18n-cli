@@ -60,20 +60,33 @@ program
 program
   .command('collect')
   .option('-n, --nokey', 'remove key')
-  .addOption(new program.Option('-a, --arguments <arguments...>', 'arguments of your program'))
+  .option('-u, --untranslated', 'collect untranslated in your project')
   .addOption(new program.Option('-p, --paths <paths...>', 'paths of entry'))
+  .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
+  .addOption(new program.Option('-a, --arguments <arguments...>', 'arguments of your program'))
+
   .description('collect locales together')
   .action(function (options) {
     const opts = program.opts();
     showSpinner('collect', async function () {
       const entry = createEntry(options.paths);
       const overrides = entry ? { entry: entry } : undefined;
-      const config = parseConf(opts.config, overrides);
+
+      const merges = options.untranslated ? {
+        exclude: {
+          translated: {
+            enable: true
+          }
+        }
+      } : undefined;
+
+      const config = parseConf(opts.config, overrides, merges);
 
       await collectCommand({
         ...config,
         __nokey: options.nokey,
-        __arguments: options.arguments
+        __arguments: options.arguments,
+        __langs: options.langs
       });
     });
   });
@@ -178,14 +191,18 @@ program
 program
   .command('trans')
   .addOption(new program.Option('-p, --paths <paths...>', 'paths of entry'))
-  .description('translate text by your program')
-  .action(function () {
+  .addOption(new program.Option('-a, --arguments <arguments...>', 'arguments of your program'))
+  .description('translate collected texts by your program')
+  .action(function (options) {
     showSpinner('trans', async function () {
       const entry = createEntry(options.paths);
       const overrides = entry ? { entry: entry } : undefined;
       const opts = program.opts();
       const config = parseConf(opts.config, overrides);
-      await transCommand(config);
+      await transCommand({
+        ...config,
+        __arguments: options.arguments,
+      });
     });
   });
 
