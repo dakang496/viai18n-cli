@@ -24,31 +24,50 @@ module.exports = async function (options) {
 }
 
 async function collectLocal(options) {
+  const baseLang = options.lang.base;
+  const langs = options.__langs || [];
+
+  const translatedExclude = options.exclude.translated;
+  const excludetranslated = !translatedExclude || translatedExclude.enable;
+  if (excludetranslated) {
+    if (langs.indexOf(baseLang) === -1) {// 如果要过滤已经翻译的，必须有基础语言的数据才行
+      options.__langs = langs.concat(baseLang)
+    }
+  }
+
   const controller = new Controller(options);
   controller.resolveFilter(filterProperty);
 
   controller.onComplete(async (context, resolveFiles) => {
     const merged = mergeFile(context, resolveFiles);
+    const keys = Object.keys(merged);
 
     /** 处理已翻译的 */
-    const baseLang = options.lang.base;
-    const translatedExclude = options.exclude.translated;
-    if (!translatedExclude || translatedExclude.enable) {
-      const langs = translatedExclude && translatedExclude.lang;
+    if (excludetranslated) {
+      const excludeLangs = translatedExclude && translatedExclude.lang;
       const baseLangData = merged[baseLang];
 
-      Object.keys(merged).forEach((lang) => {
+      keys.forEach((lang) => {
         if (lang === baseLang) {
           return;
         }
-        if (langs && langs.find(l => l === lang)) {
+        if (excludeLangs && excludeLangs.find(l => l === lang)) {
           return;
         }
         merged[lang] = actionHelper.processLangDiff(baseLangData, merged[lang], false);
       })
     };
+
     const adjusted = actionHelper.adjustRepeated(merged);
-    await outputCollect(context.options, adjusted);
+
+    const outputData = keys.reduce((data, lang) => {
+      if (langs.indexOf(lang) !== -1) {
+        data[lang] = adjusted[lang]
+      }
+      return data;
+    }, {});
+
+    await outputCollect(context.options, outputData);
   });
   await controller.start();
 }
