@@ -2,6 +2,9 @@ const path = require('path');
 const helper = require('./helper');
 function createDefaults() {
   return {
+    crowdin: {
+      output: "./crowdin/locales"
+    },
     entry: { //json文件来源目录
       // pages: './pages/',
     },

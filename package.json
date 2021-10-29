@@ -1,6 +1,6 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,9 @@
     "change-lang": "node index.js changeLang ko_KP ko_KP2  -c viai18n.config.js",
     "remove-lang": "node index.js changeLang ko_KP -c viai18n.config.js",
     "web-build": "node index.js gen -c viai18n.config.js",
-    "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js"
+    "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js",
+    "c-collect": "node index.js c-collect -c viai18n.config.js",
+    "c-split": "node index.js c-split -c viai18n.config.js"
   },
   "bin": {
     "viai18n": "./index.js"
@@ -45,6 +47,7 @@
     "commander": "^7.0.0",
     "exceljs": "^4.2.0",
     "fs-extra": "^7.0.1",
+    "glob": "^7.2.0",
     "html-webpack-plugin": "^5.3.1",
     "minimatch": "^3.0.4",
     "ora": "^3.0.0",

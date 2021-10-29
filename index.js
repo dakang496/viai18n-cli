@@ -13,6 +13,9 @@ const changeKeyCommand = require('./src/command/changeKey');
 const cleanCommand = require('./src/command/clean');
 const transCommand = require('./src/command/trans');
 
+const crowdinCollectCommand = require('./src/command/crowdin/collect');
+const crowdinSplitCommand = require('./src/command/crowdin/split');
+
 async function showSpinner(text, callback) {
   const spinner = ora(text);
   spinner.start();
@@ -90,6 +93,35 @@ program
       });
     });
   });
+program
+  .command('c-collect')
+  .option('-u, --untranslated', 'collect untranslated in your project')
+  .option('-t, --translation', 'collect translation in your project')
+  .description('collect locales together for crowdin')
+  .action(function (options) {
+    const opts = program.opts();
+    showSpinner('c-collect', async function () {
+      const config = parseConf(opts.config);
+
+      await crowdinCollectCommand({
+        ...config,
+        __untranslated: options.untranslated,
+        __translation: options.translation,
+      });
+    });
+  });
+program.command("c-split")
+  .description('split locales')
+  .action(function () {
+    showSpinner('c-split', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinSplitCommand({
+        ...config,
+      });
+    });
+  })
 program
   .command('gen')
   .description('generate html or excel for translating')

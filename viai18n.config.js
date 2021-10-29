@@ -1,5 +1,8 @@
 const axios = require("axios");
 module.exports = {
+  crowdin:{
+    output:"./crowdin/locales"
+  },
   /** find i18n files in these folders*/
   entry: {
     pages: './example/pages/',
