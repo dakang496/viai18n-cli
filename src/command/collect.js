@@ -25,12 +25,12 @@ module.exports = async function (options) {
 
 async function collectLocal(options) {
   const baseLang = options.lang.base;
-  const langs = options.__langs || [];
+  const langs = options.__langs;
 
   const translatedExclude = options.exclude.translated;
   const excludetranslated = !translatedExclude || translatedExclude.enable;
   if (excludetranslated) {
-    if (langs.indexOf(baseLang) === -1) {// 如果要过滤已经翻译的，必须有基础语言的数据才行
+    if (langs && langs.indexOf(baseLang) === -1) {// 如果要过滤已经翻译的，必须有基础语言的数据才行
       options.__langs = langs.concat(baseLang)
     }
   }
@@ -61,7 +61,7 @@ async function collectLocal(options) {
     const adjusted = actionHelper.adjustRepeated(merged);
 
     const outputData = keys.reduce((data, lang) => {
-      if (langs.indexOf(lang) !== -1) {
+      if (!langs || langs.indexOf(lang) !== -1) {
         data[lang] = adjusted[lang]
       }
       return data;

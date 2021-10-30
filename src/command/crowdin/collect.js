@@ -32,9 +32,6 @@ module.exports = async function (options) {
         pushDataByPath(contextPath, content[baseLang], sourceFileMap[baseLang]);
       } else {
         Object.keys(content).forEach((lang) => {
-          if (lang === baseLang) {
-            return;
-          }
           sourceFileMap[lang] = sourceFileMap[lang] || {};
           pushDataByPath(contextPath, content[lang], sourceFileMap[lang]);
         });
@@ -62,7 +59,7 @@ function outputFile(filePath, data) {
 }
 
 function pushDataByPath(path, data, root) {
-  if (Object.keys(root).length === 0) {
+  if (Object.keys(data).length === 0) {
     return;
   }
   const layers = path.split(Path.sep);
