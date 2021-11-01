@@ -35,7 +35,7 @@ module.exports = async function (options) {
       if (!value) {
         return;
       }
-      const destPath = Path.resolve(entryPath, keys.shift().join("/") + postfix);
+      const destPath = Path.resolve(entryPath, keys.slice(1).join("/") + postfix);
 
       if (!normalizedData[destPath]) {
         normalizedData[destPath] = {};
