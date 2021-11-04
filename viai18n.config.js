@@ -1,5 +1,8 @@
 const axios = require("axios");
 module.exports = {
+  crowdin: {
+    output: "./crowdin/locales"
+  },
   /** find i18n files in these folders*/
   entry: {
     pages: './example/pages/',
@@ -114,5 +117,15 @@ module.exports = {
         label: "한국어"
       },
     ],
+  },
+  collect: {
+    async fetch(msg) {
+      const value = msg || "Hello world";
+      return {
+        en_US: {
+          "namekey2": value,
+        }
+      }
+    }
   }
 }

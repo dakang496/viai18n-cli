@@ -50,7 +50,8 @@ Controller.prototype.run = async function () {
             content: content,
             originContent: originContent,
             filePath: filePath,
-            rootPath: rootPath
+            rootPath: rootPath,
+            entryName: name
           });
         }
       });
@@ -59,7 +60,8 @@ Controller.prototype.run = async function () {
           originContent: originContent,
           content: content,
           filePath: filePath,
-          rootPath: rootPath
+          rootPath: rootPath,
+          entryName: name
         }
         this.resolveHooks.forEach((resolve) => {
           resolve(this, data);

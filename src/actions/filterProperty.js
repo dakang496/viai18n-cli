@@ -4,6 +4,7 @@
 
 const Path = require('path');
 const Minimatch = require('minimatch');
+const helper = require("./helper");
 
 function shouldFilter(filters, value, file, lang) {
   filters = filters || [];
@@ -44,12 +45,12 @@ module.exports = function (context, data) {
   const distContent = JSON.parse(JSON.stringify(data.content));
   Object.keys(distContent).forEach((lang) => {
     // 过滤掉语言
-    if ((exclude.lang || []).indexOf(lang) !== -1) {
+    if (!helper.isLangValid(options, lang)) {
       delete distContent[lang]
       return;
     }
     const langData = distContent[lang];
-    const relativePath = Path.relative(Path.resolve(data.rootPath,'../'), data.filePath);
+    const relativePath = Path.relative(Path.resolve(data.rootPath, '../'), data.filePath);
     Object.keys(langData).forEach((key) => {
       /**
        *  过滤掉key和文本

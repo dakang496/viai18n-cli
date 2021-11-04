@@ -2,6 +2,9 @@ const path = require('path');
 const helper = require('./helper');
 function createDefaults() {
   return {
+    crowdin: {
+      output: "./crowdin/locales"
+    },
     entry: { //json文件来源目录
       // pages: './pages/',
     },
@@ -43,7 +46,7 @@ function createDefaults() {
     },
   }
 };
-module.exports = function (filename) {
+module.exports = function (filename, overrides, merges) {
   let custom = {};
   try {
     const p = path.resolve(filename);
@@ -52,7 +55,13 @@ module.exports = function (filename) {
     console.error(error);
   }
   try {
-    const merge = helper.merge(createDefaults(), custom);
+    let merge = helper.merge(createDefaults(), custom);
+    if (merges) {
+      merge = helper.merge(merge, merges);
+    }
+    if (overrides) {
+      merge = Object.assign(merge, overrides);
+    }
     const entry = merge.entry;
     Object.keys(entry).forEach((key) => {
       entry[key] = path.resolve(entry[key]);

@@ -8,7 +8,9 @@ module.exports = async function (options) {
   const controller = new Controller(options);
   controller.resolveFilter(filterProperty);
   controller.onComplete(async (context, resolveFiles) => {
-    actionHelper.fillResolveFiles(resolveFiles, data, lang.base, lang.target);
+    actionHelper.fillResolveFiles(resolveFiles, data, lang.base, lang.target, {
+      force: options.__force
+    });
   });
   controller.start();
 }

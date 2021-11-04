@@ -29,16 +29,16 @@ function traverse(dir, handler, match, excludePattern) {
   return true;
 }
 
-function traverseObj(obj, callback) {
+function traverseObj(obj, callback, keys = []) {
   if (!obj || typeof obj !== 'object') {
     return;
   }
   Object.keys(obj).forEach((key) => {
     const type = typeof obj[key];
     if (type === 'object') {
-      traverseObj(obj[key], callback);
+      traverseObj(obj[key], callback, keys.concat(key));
     } else {
-      callback && callback(key, obj[key], obj);
+      callback && callback(key, obj[key], obj, keys);
     }
   })
 }

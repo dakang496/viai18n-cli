@@ -1,18 +1,9 @@
 
-const collectCommad = require("./collect");
-const splitCommad = require("./split");
-const helper = require("../helper");
 const actionHelper = require('../actions/helper');
 const outputCollect = require('../actions/outputCollect');
 
 module.exports = async function (options) {
-  const newOptions = helper.merge({}, options);
-  newOptions.exclude = newOptions.exclude || {};
-  newOptions.exclude.translated = newOptions.exclude.translated || {}
-  newOptions.exclude.translated.enable = true
-  await collectCommad(newOptions);
-  await translate(newOptions);
-  await splitCommad(newOptions);
+  await translate(options);
 }
 
 async function translate(options) {
@@ -34,7 +25,7 @@ async function handleTrans(options, untranslatedItems, data) {
   if (typeof translate !== 'function') {
     return;
   }
-  let translatedItems = await translate(untranslatedItems);
+  let translatedItems = await translate.apply(null, [untranslatedItems].concat(options.__arguments));
   if (!translatedItems) {
     return;
   }
