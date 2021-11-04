@@ -15,6 +15,10 @@ const transCommand = require('./src/command/trans');
 
 const crowdinCollectCommand = require('./src/command/crowdin/collect');
 const crowdinSplitCommand = require('./src/command/crowdin/split');
+const crowdinPushCommand = require('./src/command/crowdin/push');
+const crowdinPullCommand = require('./src/command/crowdin/pull');
+const crowdinBranchCommand = require('./src/command/crowdin/branch');
+const crowdinStatusCommand = require('./src/command/crowdin/status');
 
 async function showSpinner(text, callback) {
   const spinner = ora(text);
@@ -121,7 +125,79 @@ program.command("c-split")
         ...config,
       });
     });
-  })
+  });
+program.command("push")
+  .description('collect locales and upload to crodwin')
+  .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
+  .action(function (options) {
+    showSpinner('push', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+   
+      await crowdinPushCommand({
+        ...config,
+        __branch: options.branch
+      });
+    });
+  });
+program.command("pull")
+  .description('download translations and split to local project')
+  .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
+  .action(function (options) {
+    showSpinner('pull', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinPullCommand({
+        ...config,
+        __branch: options.branch
+      });
+    });
+  });
+program.command("branch-add")
+  .description('create a new branch')
+  .arguments('<name>', 'specify branch name')
+  .action(function (name) {
+    showSpinner('branch-add', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinBranchCommand({
+        ...config,
+        __branch: name,
+        __command: "branch-add"
+      });
+    });
+  });
+program.command("branch-delete")
+  .description('delete a branch')
+  .arguments('<name>', 'specify branch name')
+  .action(function (name) {
+    showSpinner('branch-delete', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinBranchCommand({
+        ...config,
+        __branch: name,
+        __command: "branch-delete"
+      });
+    });
+  });
+program.command("status")
+  .description('show both translation and proofreading progress')
+  .option('-b, --branch <name>', 'specify branch name. eg: master')
+  .action(function (options) {
+    showSpinner('status', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinStatusCommand({
+        ...config,
+        __branch: options.branch,
+      });
+    });
+  });
 program
   .command('gen')
   .description('generate html or excel for translating')

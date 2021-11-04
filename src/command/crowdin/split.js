@@ -64,7 +64,7 @@ module.exports = async function (options) {
 
 function outputFile(filePath, data) {
   try {
-    const destData = JSON.stringify(data, null, 2);
+    const destData = JSON.stringify(data, null, 4);
     Fse.outputFileSync(filePath, destData);
   } catch (error) {
     console.error(error);
