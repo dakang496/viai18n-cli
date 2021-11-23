@@ -13,9 +13,10 @@ module.exports = async function (options) {
     __translation: false
   });
 
+  const crowdinArgs = (options.__crowdinArgs || "").replace("_", "-");;
   if (branch === "master") {
-    shell.exec(`crowdin upload sources`);
+    shell.exec(`crowdin upload sources ` + crowdinArgs);
   } else {
-    shell.exec(`crowdin upload sources -b ${branch}`);
+    shell.exec(`crowdin upload sources -b ${branch}` + crowdinArgs);
   }
 }

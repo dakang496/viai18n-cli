@@ -7,12 +7,15 @@ module.exports = async function (options) {
   const crowdinOutput = (options.crowdin && options.crowdin.output) || "./crowdin/locales";
   const postfix = (options.resolve && options.resolve.postfix) || ".messages.json";
   const baseLang = (options.lang && options.lang.base) || "zh_Hans_CN";
+  const ignoreLangs = options.__ignoreLangs || [baseLang, "ach_UG"]
 
   const localesPath = Path.resolve(crowdinOutput);
 
   const transFilePaths = glob.sync("**/*.json", {
     cwd: localesPath,
-    ignore: `**/*/${baseLang}.json`
+    ignore: ignoreLangs.map((lang) => {
+      return `**/*/${lang}.json`;
+    })
   });
 
   transFilePaths.forEach((filePath) => {
