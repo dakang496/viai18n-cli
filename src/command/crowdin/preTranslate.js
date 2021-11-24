@@ -9,7 +9,7 @@ module.exports = async function (options) {
   }
 
   const defaultArgs = "--method " + method;
-  const crowdinArgs = (options.__crowdinArgs || defaultArgs).replace("_", "-");
+  const crowdinArgs = (options.__crowdinArgs || defaultArgs).replace(/_/gi,"-");
 
   if (branch === "master") {
     shell.exec(`crowdin pre-translate ` + crowdinArgs);

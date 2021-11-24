@@ -1,6 +1,6 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,8 @@
     "pull": "node index.js pull -b master -c viai18n.config.js",
     "branch-add": "node index.js branch-add test1 -c viai18n.config.js",
     "branch-delete": "node index.js branch-delete test1 -c viai18n.config.js",
-    "status": "node index.js status -c viai18n.config.js"
+    "status": "node index.js status -c viai18n.config.js",
+    "client": "node index.js client -c viai18n.config.js"
   },
   "bin": {
     "viai18n": "./index.js"
@@ -42,6 +43,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@crowdin/crowdin-api-client": "^1.12.3",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.1",
@@ -54,6 +56,7 @@
     "fs-extra": "^7.0.1",
     "glob": "^7.2.0",
     "html-webpack-plugin": "^5.3.1",
+    "js-yaml": "^4.1.0",
     "minimatch": "^3.0.4",
     "ora": "^3.0.0",
     "script-ext-html-webpack-plugin": "^2.1.3",

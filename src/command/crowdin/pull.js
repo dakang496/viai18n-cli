@@ -1,6 +1,7 @@
 
 const split = require("./split");
 const shell = require('shelljs');
+const client = require("./client");
 
 module.exports = async function (options) {
   const branch = options.__branch;
@@ -8,7 +9,7 @@ module.exports = async function (options) {
   if (!branch) {
     return;
   }
-  const crowdinArgs = (options.__crowdinArgs || "").replace("_","-");
+  const crowdinArgs = (options.__crowdinArgs || "").replace(/_/gi, "-");
   const defaultArgs = "--export-only-approved --skip-untranslated-strings";
   if (branch === "master") {
     shell.exec(`crowdin download ` + (crowdinArgs || defaultArgs));
@@ -19,5 +20,7 @@ module.exports = async function (options) {
   await split({
     ...options,
   });
+
+  await client(options, "pull");
 
 }

@@ -20,6 +20,7 @@ const crowdinPullCommand = require('./src/command/crowdin/pull');
 const crowdinBranchCommand = require('./src/command/crowdin/branch');
 const crowdinStatusCommand = require('./src/command/crowdin/status');
 const crowdinPreTranslateCommand = require('./src/command/crowdin/preTranslate');
+const crowdinClientCommand = require('./src/command/crowdin/client');
 
 async function showSpinner(text, callback) {
   const spinner = ora(text);
@@ -225,6 +226,18 @@ program.command("pre-Translate")
     });
   });
 
+program.command("client")
+  .description('call crowdin api by your program')
+  .action(function (options) {
+    showSpinner('client', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinClientCommand({
+        ...config,
+      });
+    });
+  });
 program
   .command('gen')
   .description('generate html or excel for translating')
