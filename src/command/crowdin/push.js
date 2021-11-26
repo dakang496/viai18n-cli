@@ -2,6 +2,7 @@
 const collect = require("./collect");
 const shell = require('shelljs');
 const client = require("./client");
+const helper = require("../../helper");
 
 module.exports = async function (options) {
   const branch = options.__branch;
@@ -14,12 +15,23 @@ module.exports = async function (options) {
     __translation: false
   });
 
-  const crowdinArgs = (options.__crowdinArgs || "").replace(/_/gi,"-");
+  const crowdinOptions = options.crowdin;
+
+  const regx = new RegExp(helper.fitRegx(crowdinOptions.argsPlaceholder || ""), "ig");
+  const args = (options.__crowdinArgs || "").replace(regx, "-");
+
   if (branch === "master") {
-    shell.exec(`crowdin upload sources ` + crowdinArgs);
+    shell.exec(`crowdin upload sources ` + args);
   } else {
-    shell.exec(`crowdin upload sources -b ${branch}` + crowdinArgs);
+    shell.exec(`crowdin upload sources -b ${branch}` + args);
   }
 
-  await client(options, "push");
+  if (crowdinOptions.push && crowdinOptions.push.client) {
+
+    const result = /(-c|--config) (.+?) /.exec(args);
+    const path = result ? result[2] : undefined
+
+    await client(options, "push", path);
+  }
+
 }

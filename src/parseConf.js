@@ -3,7 +3,8 @@ const helper = require('./helper');
 function createDefaults() {
   return {
     crowdin: {
-      output: "./crowdin/locales"
+      output: "./crowdin/locales",
+      argsPlaceholder: "@",
     },
     entry: { //json文件来源目录
       // pages: './pages/',

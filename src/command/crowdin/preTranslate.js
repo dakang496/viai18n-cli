@@ -1,4 +1,5 @@
 const shell = require('shelljs');
+const helper = require("../../helper");
 
 module.exports = async function (options) {
   const branch = options.__branch;
@@ -8,12 +9,16 @@ module.exports = async function (options) {
     return;
   }
 
-  const defaultArgs = "--method " + method;
-  const crowdinArgs = (options.__crowdinArgs || defaultArgs).replace(/_/gi,"-");
+  const crowdinOptions = options.crowdin;
+
+  const regx = new RegExp(helper.fitRegx(crowdinOptions.argsPlaceholder || ""), "ig");
+  const args = (options.__crowdinArgs || "").replace(regx, "-") ||  ("--method " + method);
+
+
 
   if (branch === "master") {
-    shell.exec(`crowdin pre-translate ` + crowdinArgs);
+    shell.exec(`crowdin pre-translate ` + args);
   } else {
-    shell.exec(`crowdin pre-translate -b ${branch} ` + crowdinArgs);
+    shell.exec(`crowdin pre-translate -b ${branch} ` + args);
   }
 }

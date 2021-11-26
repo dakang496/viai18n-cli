@@ -228,6 +228,7 @@ program.command("pre-Translate")
 
 program.command("client")
   .description('call crowdin api by your program')
+  .option('-p, --path [name]', 'path of crowdin.yml')
   .action(function (options) {
     showSpinner('client', async function () {
       const opts = program.opts();
@@ -235,7 +236,7 @@ program.command("client")
 
       await crowdinClientCommand({
         ...config,
-      });
+      }, "client", options.path);
     });
   });
 program

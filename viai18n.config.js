@@ -2,6 +2,13 @@ const axios = require("axios");
 module.exports = {
   crowdin: {
     output: "./crowdin/locales",
+    argsPlaceholder: "@",
+    pull: {
+      client: false,
+    },
+    push: {
+      client: true,
+    },
     // Api  https://support.crowdin.com/api/v2/#section/Introduction
     async client(command, options, config, Api) {
       const projectId = config.project_id;
