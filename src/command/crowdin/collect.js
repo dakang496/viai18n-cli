@@ -66,10 +66,13 @@ function pushDataByPath(path, data, root) {
   let parentData = root;
 
   layers.forEach((layer, index) => {
-    parentData[layer] = parentData[layer] || {};
+    const layerData = parentData[layer] = parentData[layer] || {};
 
     if (index >= (layers.length - 1)) {
-      parentData[layer] = data;
+      parentData[layer] = {
+        ...layerData,
+        ...data,
+      };
     }
     parentData = parentData[layer];
   })

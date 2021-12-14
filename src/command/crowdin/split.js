@@ -51,12 +51,13 @@ module.exports = async function (options) {
 
     Object.keys(normalizedData).forEach((path) => {
 
-      let destData = JSON.parse(helper.readFileSync(path) || null);
-      if (!destData || !destData[lang] || !normalizedData[path]) {
+      let destData = JSON.parse(helper.readFileSync(path) || null) || {};
+      if (!normalizedData[path]) {
         return;
       }
+      const destLangData = destData[lang] || {};
       destData[lang] = helper.sortObjectByKey({
-        ...destData[lang],
+        ...destLangData,
         ...normalizedData[path][lang]
       });
       outputFile(path, destData);
