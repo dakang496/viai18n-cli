@@ -59,7 +59,7 @@ function outputFile(filePath, data) {
 }
 
 function pushDataByPath(path, data, root) {
-  if (Object.keys(data).length === 0) {
+  if (!data ||Object.keys(data).length === 0) {
     return;
   }
   const layers = path.split(Path.sep);

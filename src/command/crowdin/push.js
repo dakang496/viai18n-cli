@@ -6,7 +6,7 @@ const helper = require("../../helper");
 
 module.exports = async function (options) {
   const branch = options.__branch;
-  if (!branch) {
+  if (!branch || branch === "none") {
     return;
   }
   await collect({

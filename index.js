@@ -119,7 +119,7 @@ program
 program.command("c-split")
   .description('split locales')
   .addOption(new program.Option('-i, --ignore-langs <langs...>', 'ignore languages'))
-  .action(function () {
+  .action(function (options) {
     showSpinner('c-split', async function () {
       const opts = program.opts();
       const config = parseConf(opts.config);

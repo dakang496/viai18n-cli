@@ -7,7 +7,9 @@ module.exports = async function (options) {
   const crowdinOutput = (options.crowdin && options.crowdin.output) || "./crowdin/locales";
   const postfix = (options.resolve && options.resolve.postfix) || ".messages.json";
   const baseLang = (options.lang && options.lang.base) || "zh_Hans_CN";
-  const ignoreLangs = options.__ignoreLangs || [baseLang, "ach_UG"]
+  const ignoreLangs = options.__ignoreLangs || [baseLang, "ach_UG"];
+  const splitOpitons = (options.crowdin && options.crowdin.split) || {}
+  const looseLangs = splitOpitons.looseLangs || ["ach_UG"];
 
   const localesPath = Path.resolve(crowdinOutput);
 
@@ -50,20 +52,30 @@ module.exports = async function (options) {
     });
 
     Object.keys(normalizedData).forEach((path) => {
-
-      let destData = JSON.parse(helper.readFileSync(path) || null) || {};
       if (!normalizedData[path]) {
         return;
       }
-      const destLangData = destData[lang] || {};
+      const isLoose = looseLangs.indexOf(lang) !== -1;
+      let destData = JSON.parse(helper.readFileSync(path) || null);
+      if (!isLoose && !destData) {
+        return;
+      }
+      destData = destData || {};
+
+      let destLangData = destData[lang];
+      if (!isLoose && !destLangData) {
+        return;
+      }
+      destLangData = destLangData || {};
+
       destData[lang] = helper.sortObjectByKey({
         ...destLangData,
         ...normalizedData[path][lang]
       });
       outputFile(path, destData);
-    })
+    });
 
-  })
+  });
 }
 
 function outputFile(filePath, data) {
