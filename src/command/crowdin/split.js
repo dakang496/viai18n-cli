@@ -2,6 +2,7 @@ const glob = require("glob")
 const Path = require("path");
 const Fse = require('fs-extra');
 const helper = require("../../helper");
+const actionHelper = require("../../actions/helper");
 
 module.exports = async function (options) {
   const crowdinOutput = (options.crowdin && options.crowdin.output) || "./crowdin/locales";
@@ -24,6 +25,10 @@ module.exports = async function (options) {
     const pathParts = filePath.split(Path.sep);
     const entryName = pathParts[0];
     const lang = Path.basename(pathParts[pathParts.length - 1], ".json");
+
+    if (!actionHelper.isLangValid(options, lang)) {
+      return;
+    }
 
     const entryPath = options.entry[entryName];
     if (!entryPath) {

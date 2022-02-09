@@ -119,6 +119,7 @@ program
 program.command("c-split")
   .description('split locales')
   .addOption(new program.Option('-i, --ignore-langs <langs...>', 'ignore languages'))
+  .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
   .action(function (options) {
     showSpinner('c-split', async function () {
       const opts = program.opts();
@@ -126,7 +127,8 @@ program.command("c-split")
 
       await crowdinSplitCommand({
         ...config,
-        __ignoreLangs: options.ignoreLangs
+        __ignoreLangs: options.ignoreLangs,
+        __langs: options.langs
       });
     });
   });
@@ -150,6 +152,7 @@ program.command("pull")
   .description('download translations and split to local project')
   .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
   .addOption(new program.Option('-i, --ignore-langs <langs...>', 'ignore languages'))
+  .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
   .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
   .action(function (options) {
     showSpinner('pull', async function () {
@@ -160,7 +163,8 @@ program.command("pull")
         ...config,
         __branch: options.branch,
         __crowdinArgs: options.crowdinArgs,
-        __ignoreLangs: options.ignoreLangs
+        __ignoreLangs: options.ignoreLangs,
+        __langs: options.langs
       });
     });
   });
