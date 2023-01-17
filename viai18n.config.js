@@ -1,7 +1,30 @@
 const axios = require("axios");
 module.exports = {
   crowdin: {
-    output: "./crowdin/locales"
+    output: "./crowdin/locales",
+    argsPlaceholder: "@",
+    pull: {
+      client: false,
+    },
+    push: {
+      client: true,
+    },
+    // Api  https://support.crowdin.com/api/v2/#section/Introduction
+    async client(command, options, config, Api) {
+      const projectId = config.project_id;
+      const api = new Api({
+        token: config.api_token
+      })
+      if (command === 'client') {
+        console.log("client");
+      } else if (command === "pull") {
+        const branch = options.__branch;
+        const name = branch === 'master' ? undefined : branch;
+
+        const res = await api.sourceFilesApi.listProjectBranches(projectId, name);
+        console.log(JSON.stringify(res, null, 2));
+      }
+    }
   },
   /** find i18n files in these folders*/
   entry: {

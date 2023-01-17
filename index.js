@@ -19,6 +19,8 @@ const crowdinPushCommand = require('./src/command/crowdin/push');
 const crowdinPullCommand = require('./src/command/crowdin/pull');
 const crowdinBranchCommand = require('./src/command/crowdin/branch');
 const crowdinStatusCommand = require('./src/command/crowdin/status');
+const crowdinPreTranslateCommand = require('./src/command/crowdin/preTranslate');
+const crowdinClientCommand = require('./src/command/crowdin/client');
 
 async function showSpinner(text, callback) {
   const spinner = ora(text);
@@ -116,32 +118,41 @@ program
   });
 program.command("c-split")
   .description('split locales')
-  .action(function () {
+  .addOption(new program.Option('-i, --ignore-langs <langs...>', 'ignore languages'))
+  .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
+  .action(function (options) {
     showSpinner('c-split', async function () {
       const opts = program.opts();
       const config = parseConf(opts.config);
 
       await crowdinSplitCommand({
         ...config,
+        __ignoreLangs: options.ignoreLangs,
+        __langs: options.langs
       });
     });
   });
 program.command("push")
   .description('collect locales and upload to crodwin')
+  .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
   .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
   .action(function (options) {
     showSpinner('push', async function () {
       const opts = program.opts();
       const config = parseConf(opts.config);
-   
+
       await crowdinPushCommand({
         ...config,
-        __branch: options.branch
+        __branch: options.branch,
+        __crowdinArgs: options.crowdinArgs
       });
     });
   });
 program.command("pull")
   .description('download translations and split to local project')
+  .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
+  .addOption(new program.Option('-i, --ignore-langs <langs...>', 'ignore languages'))
+  .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
   .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
   .action(function (options) {
     showSpinner('pull', async function () {
@@ -150,7 +161,10 @@ program.command("pull")
 
       await crowdinPullCommand({
         ...config,
-        __branch: options.branch
+        __branch: options.branch,
+        __crowdinArgs: options.crowdinArgs,
+        __ignoreLangs: options.ignoreLangs,
+        __langs: options.langs
       });
     });
   });
@@ -196,6 +210,41 @@ program.command("status")
         ...config,
         __branch: options.branch,
       });
+    });
+  });
+
+program.command("pre-Translate")
+  .description('Pre-translate files via Machine Translation (MT) or Translation Memory (TM)')
+  .option('-b, --branch <name>', 'specify branch name. eg: master')
+  .option('-m, --method [name]', 'specify method', "tm")
+  .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
+  .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
+  .action(function (options) {
+    showSpinner('pre-Translate', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinPreTranslateCommand({
+        ...config,
+        __branch: options.branch,
+        __method: options.method,
+        __crowdinArgs: options.crowdinArgs,
+        __langs: options.langs
+      });
+    });
+  });
+
+program.command("client")
+  .description('call crowdin api by your program')
+  .option('-p, --path [name]', 'path of crowdin.yml')
+  .action(function (options) {
+    showSpinner('client', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinClientCommand({
+        ...config,
+      }, "client", options.path);
     });
   });
 program

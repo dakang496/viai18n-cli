@@ -59,17 +59,20 @@ function outputFile(filePath, data) {
 }
 
 function pushDataByPath(path, data, root) {
-  if (Object.keys(data).length === 0) {
+  if (!data ||Object.keys(data).length === 0) {
     return;
   }
   const layers = path.split(Path.sep);
   let parentData = root;
 
   layers.forEach((layer, index) => {
-    parentData[layer] = parentData[layer] || {};
+    const layerData = parentData[layer] = parentData[layer] || {};
 
     if (index >= (layers.length - 1)) {
-      parentData[layer] = data;
+      parentData[layer] = {
+        ...layerData,
+        ...data,
+      };
     }
     parentData = parentData[layer];
   })
