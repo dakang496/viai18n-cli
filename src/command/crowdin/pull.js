@@ -3,6 +3,7 @@ const split = require("./split");
 const shell = require('shelljs');
 const client = require("./client");
 const helper = require("../../helper");
+const CrowdinApi = require('@crowdin/crowdin-api-client').default;
 
 module.exports = async function (options) {
   const branch = options.__branch;
@@ -22,16 +23,25 @@ module.exports = async function (options) {
     shell.exec(`crowdin download -b ${branch} ` + args);
   }
 
+  const result = /(-c|--config) (.+?) /.exec(args);
+  const configPath = result ? result[2] : undefined
+
+  const pullCrowdinOptions = crowdinOptions.pull;
+
+  if (pullCrowdinOptions && pullCrowdinOptions.beforeSplit) {
+    const config = helper.readYaml(configPath || "crowdin.yml");
+    await pullCrowdinOptions.beforeSplit(options, config, CrowdinApi, shell);
+  }
+
   await split({
     ...options,
   });
 
-  if (crowdinOptions.pull && crowdinOptions.pull.client) {
+  if (pullCrowdinOptions && pullCrowdinOptions.client) {
 
-    const result = /(-c|--config) (.+?) /.exec(args);
-    const path = result ? result[2] : undefined
+   
 
-    await client(options, "pull", path);
+    await client(options, "pull", configPath);
   }
 
 }

@@ -29,7 +29,7 @@ function createDefaults() {
       },
       lang: [
         'lastUpdateTime',
-        "zh_Hant_HK"
+        // "zh_Hant_HK"
       ],
       file: [
         // /^index.messages.json/

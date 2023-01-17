@@ -1,6 +1,8 @@
 const Fse = require('fs-extra');
 const Path = require('path');
 const Minimatch = require('minimatch');
+const yaml = require('js-yaml');
+const fs = require('fs');
 
 function traverse(dir, handler, match, excludePattern) {
   const stats = Fse.statSync(dir);
@@ -128,6 +130,11 @@ function sortObjectByKey(unordered) {
   return ordered
 }
 
+function readYaml(file) {
+  const absolutePath = Path.resolve(file);
+  return yaml.load(fs.readFileSync(absolutePath, 'utf8'));
+}
+
 module.exports = {
   traverse: traverse,
   traverseObj: traverseObj,
@@ -137,4 +144,5 @@ module.exports = {
   fitRegx: fitRegx,
   sortObjectByKey: sortObjectByKey,
   extractSame: extractSame,
+  readYaml: readYaml
 }

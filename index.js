@@ -217,6 +217,8 @@ program.command("pre-Translate")
   .description('Pre-translate files via Machine Translation (MT) or Translation Memory (TM)')
   .option('-b, --branch <name>', 'specify branch name. eg: master')
   .option('-m, --method [name]', 'specify method', "tm")
+  .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
+  .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
   .action(function (options) {
     showSpinner('pre-Translate', async function () {
       const opts = program.opts();
@@ -225,7 +227,9 @@ program.command("pre-Translate")
       await crowdinPreTranslateCommand({
         ...config,
         __branch: options.branch,
-        __method: options.method
+        __method: options.method,
+        __crowdinArgs: options.crowdinArgs,
+        __langs: options.langs
       });
     });
   });
