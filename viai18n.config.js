@@ -42,6 +42,11 @@ module.exports = {
   resolve: {
     postfix: '.messages.json', // postfix of i18n file
   },
+  include:{
+    git:{
+      baseBranch:"develop",
+    }
+  },
   /** filter something */
   exclude: {
     translated: {
