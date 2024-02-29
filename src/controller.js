@@ -55,8 +55,14 @@ Controller.prototype.getIncludedFiles = function () {
     console.log(this.highlight(`\nCurrent branch is ${currentBranch} which is same as the base branch, so this 'include' feature doesn't work!!!`, "red"));
     return null;
   }
+  const postfix = options.resolve.postfix;
+  const uncommittedFilesStr = shell.exec(`git status --porcelain "*${postfix}" | sed s/^...//`).stdout.trim();
+  const uncommittedFiles = uncommittedFilesStr ? uncommittedFilesStr.split("\n") : [];
+  if (uncommittedFiles.length > 0) {
+    console.log(this.highlight(`!!!!!!!!!!!!!!warning!!!!!!!!!!!!!!\nyou have some uncommitted files:\n${uncommittedFiles.join(", ")}`, "red"));
+  }
   console.log(this.highlight(`Only collect modified files based on ${baseBranch} branch!!!`, "red"));
-  const postfix = options.resolve.postfix
+
   console.log(this.highlight("Current branch first hash:"));
   const firstHash = shell.exec(`git log ${baseBranch}..HEAD --pretty=format:%h | tail -1`).stdout.trim();
   console.log(this.highlight("\nIt previous hash:"));

@@ -13,8 +13,6 @@ const changeKeyCommand = require('./src/command/changeKey');
 const cleanCommand = require('./src/command/clean');
 const transCommand = require('./src/command/trans');
 const sourceTransCommand = require('./src/command/source/transform');
-
-
 const crowdinCollectCommand = require('./src/command/crowdin/collect');
 const crowdinSplitCommand = require('./src/command/crowdin/split');
 const crowdinPushCommand = require('./src/command/crowdin/push');
