@@ -1,4 +1,5 @@
 const axios = require("axios");
+const Chinese = require('chinese-s2t')
 module.exports = {
   crowdin: {
     output: "./crowdin/locales",
@@ -24,6 +25,12 @@ module.exports = {
         const res = await api.sourceFilesApi.listProjectBranches(projectId, name);
         console.log(JSON.stringify(res, null, 2));
       }
+    }
+  },
+  source: {
+    pattern: ['**/*.vue', '**/*.text.js'], // glob pattern
+    transform(content) {
+      return Chinese.t2s(content);
     }
   },
   /** find i18n files in these folders*/

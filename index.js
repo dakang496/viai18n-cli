@@ -12,6 +12,8 @@ const changeLangCommand = require('./src/command/changeLang');
 const changeKeyCommand = require('./src/command/changeKey');
 const cleanCommand = require('./src/command/clean');
 const transCommand = require('./src/command/trans');
+const sourceTransCommand = require('./src/command/source/transform');
+
 
 const crowdinCollectCommand = require('./src/command/crowdin/collect');
 const crowdinSplitCommand = require('./src/command/crowdin/split');
@@ -359,6 +361,22 @@ program
       await transCommand({
         ...config,
         __arguments: options.arguments,
+      });
+    });
+  });
+
+program
+  .command('source-trans')
+  .addOption(new program.Option('-p, --paths <paths...>', 'paths of entry'))
+  .description('transform source by your program')
+  .action(function (options) {
+    showSpinner('source-trans', async function () {
+      const entry = createEntry(options.paths);
+      const overrides = entry ? { entry: entry } : undefined;
+      const opts = program.opts();
+      const config = parseConf(opts.config, overrides);
+      await sourceTransCommand({
+        ...config,
       });
     });
   });
