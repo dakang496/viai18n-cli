@@ -9,6 +9,11 @@ module.exports = async function (options) {
   if (!branch || branch === "none") {
     return;
   }
+
+  if (!helper.checkBranchName(options, branch)) {
+    return;
+  }
+
   await collect({
     ...options,
     __untranslated: false,

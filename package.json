@@ -1,6 +1,6 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "change-lang": "node index.js changeLang ko_KP ko_KP2  -c viai18n.config.js",
     "remove-lang": "node index.js changeLang ko_KP -c viai18n.config.js",
     "web-build": "node index.js gen -c viai18n.config.js",
-    "web-dev": "webpack-dev-server --progress --inline --open --hot --config build/webpack.dev.js",
+    "web-dev": "webpack-dev-server --progress --open --config build/webpack.dev.js",
     "c-collect": "node index.js c-collect -c viai18n.config.js",
     "c-split": "node index.js c-split -c viai18n.config.js",
     "push": "node index.js push -b master -c viai18n.config.js",
@@ -45,34 +45,34 @@
   "license": "MIT",
   "dependencies": {
     "@crowdin/crowdin-api-client": "^1.30.0",
-    "babel-core": "^6.22.1",
-    "babel-eslint": "^8.2.1",
-    "babel-loader": "^7.1.1",
-    "babel-plugin-transform-runtime": "^6.22.0",
-    "babel-preset-env": "^1.3.2",
-    "babel-preset-stage-2": "^6.22.0",
+    "@babel/core": "^7.23.2",
+    "@babel/eslint-parser": "^7.23.2",
+    "babel-loader": "^9.1.3",
+    "@babel/plugin-transform-runtime": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-stage-2": "^7.8.3",
     "blueimp-md5": "^2.10.0",
     "chinese-s2t": "^1.0.0",
     "commander": "^7.0.0",
     "exceljs": "^4.2.0",
     "fs-extra": "^7.0.1",
     "glob": "^10.3.10",
+    "html-inline-script-webpack-plugin": "^3.2.1",
     "html-webpack-plugin": "^5.6.0",
     "js-yaml": "^4.1.0",
     "minimatch": "^3.1.2",
     "ora": "^3.0.0",
-    "script-ext-html-webpack-plugin": "^2.1.3",
     "shelljs": "^0.8.5",
-    "webpack": "^5.90.3",
-    "webpack-cli": "^4.2.0",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.1.0"
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.10.0"
   },
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
   },
   "devDependencies": {
-    "axios": "^0.21.4"
+    "axios": "^1.9.0"
   }
 }

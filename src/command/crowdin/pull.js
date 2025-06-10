@@ -11,6 +11,11 @@ module.exports = async function (options) {
   if (!branch || branch === "none") {
     return;
   }
+
+  if (!helper.checkBranchName(options, branch)) {
+    return;
+  }
+
   const crowdinOptions = options.crowdin;
 
   const defaultArgs = "--export-only-approved --skip-untranslated-strings";
@@ -39,7 +44,7 @@ module.exports = async function (options) {
 
   if (pullCrowdinOptions && pullCrowdinOptions.client) {
 
-   
+
 
     await client(options, "pull", configPath);
   }

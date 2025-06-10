@@ -36,7 +36,7 @@ async function showSpinner(text, callback) {
 
 const pkg = require('./package.json');
 program.version(pkg.version, '-v, --version');
-program.option('-c, --config [file]', 'setup profile', 'viai18n.config.js');
+program.option('-c, --config [file...]', 'setup profile', ['viai18n.config.cjs', 'viai18n.config.js']);
 
 const createEntry = function (paths) {
   return paths ? paths.reduce((entry, path, index) => {
@@ -151,6 +151,7 @@ program.command("push")
 program.command("pull")
   .description('download translations and split to local project')
   .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
+  .addOption(new program.Option('-p, --preprocess', 'carry out preprocess such as collection').default(true))
   .addOption(new program.Option('-i, --ignore-langs <langs...>', 'ignore languages'))
   .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
   .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
@@ -158,6 +159,14 @@ program.command("pull")
     showSpinner('pull', async function () {
       const opts = program.opts();
       const config = parseConf(opts.config);
+
+      if (options.preprocess) {
+        console.log('----------------collecting----------------');
+        await crowdinCollectCommand({
+          ...config,
+        });
+         console.log('----------------collected----------------');
+      }
 
       await crowdinPullCommand({
         ...config,

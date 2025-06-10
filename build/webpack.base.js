@@ -1,7 +1,7 @@
 
 const Path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
+const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
 function resolve(dir) {
   return Path.join(__dirname, '..', dir)
 }
@@ -12,7 +12,9 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    path: Path.resolve('viai18n-html')
+    path: Path.resolve('viai18n-html'),
+    // 在每次构建前清理输出目录
+    clean: true, 
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -41,8 +43,7 @@ module.exports = {
       },
       inlineSource: '.(js|css)$', // 内联
     }),
-    new ScriptExtHtmlWebpackPlugin({
-      inline: /\.js$/,
-    })
+    new HtmlInlineScriptPlugin(), // 启用内联插件
+    
   ]
 }

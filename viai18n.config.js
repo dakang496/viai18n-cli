@@ -1,4 +1,3 @@
-const axios = require("axios");
 const Chinese = require('chinese-s2t')
 module.exports = {
   crowdin: {
@@ -100,37 +99,14 @@ module.exports = {
      *  value: "" // it is translated text
      * }]
      * 
-     * Here's  only an example with no authorization.
-     * Please dont to use to your project.
      */
     async translate(items) {
-      const types = {
-        en_US: "ZH_CN2EN",
-        ko_KP: "ZH_CN2KR"
-      }
-      try {
-        const untranslated = items[0];
-        const response = await axios.get("http://fanyi.youdao.com/translate", {
-          params: {
-            doctype: "json",
-            type: types[untranslated.lang] || types.en_US, // "AUTO"
-            i: untranslated.text
-          }
-        });
-        const data = response.data;
-        return items.map((item) => {
-          let value;
-          if (data && data.errorCode === 0 && data.translateResult.length > 0) {
-            value = data.translateResult[0][0].tgt;
-          }
-          return {
-            ...item,
-            value: value
-          }
-        })
-      } catch (error) {
-        console.error(error);
-      }
+      return items.map((item) => {
+        return {
+          ...item,
+          value: "need translate"
+        }
+      })
     }
   },
   gen: {

@@ -135,6 +135,16 @@ function readYaml(file) {
   return yaml.load(fs.readFileSync(absolutePath, 'utf8'));
 }
 
+function checkBranchName(options, branch) {
+  const crowdinOptions = options.crowdin;
+  const branchPattern = crowdinOptions && crowdinOptions.branchPattern;
+  if (branchPattern && !branchPattern.test(branch)) {
+    console.error("\nbranch name not match:", branchPattern, "\n");
+    return false;
+  }
+  return true;
+}
+
 module.exports = {
   traverse: traverse,
   traverseObj: traverseObj,
@@ -144,5 +154,6 @@ module.exports = {
   fitRegx: fitRegx,
   sortObjectByKey: sortObjectByKey,
   extractSame: extractSame,
-  readYaml: readYaml
+  readYaml: readYaml,
+  checkBranchName: checkBranchName
 }

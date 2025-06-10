@@ -47,14 +47,24 @@ function createDefaults() {
     },
   }
 };
-module.exports = function (filename, overrides, merges) {
-  let custom = {};
-  try {
-    const p = path.resolve(filename);
-    custom = helper.isFileExist(p) ? require(p) : {};
-  } catch (error) {
-    console.error(error);
+module.exports = function (filenames, overrides, merges) {
+  if (!Array.isArray(filenames)) {
+    filenames = [filenames];
   }
+
+  let custom = {};
+  for (const filename of filenames) {
+    try {
+      const p = path.resolve(filename);
+      if (helper.isFileExist(p)) {
+        custom = require(p);
+        break; // 找到存在的文件后跳出循环
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
   try {
     let merge = helper.merge(createDefaults(), custom);
     if (merges) {

@@ -1,8 +1,9 @@
 const webpack = require("webpack");
 const webpackProd = require('../../../build/webpack.prod');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 module.exports = function (options) {
+
   const genOptions = options.gen || {};
 
   const webpackConf = merge(webpackProd, {
@@ -25,7 +26,9 @@ module.exports = function (options) {
 
   });
 
-  webpack(webpackConf, (err, stats) => {
+
+  // 使用现代的 Promise API 来处理 Webpack 构建结果
+  webpack(webpackConf).run((err, stats) => {
     if (err) {
       console.error(err.stack || err);
       if (err.details) {
@@ -40,6 +43,5 @@ module.exports = function (options) {
     if (stats.hasWarnings()) {
       console.warn(info.warnings);
     }
-
   });
 }
