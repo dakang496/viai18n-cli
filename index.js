@@ -17,10 +17,12 @@ const crowdinCollectCommand = require('./src/command/crowdin/collect');
 const crowdinSplitCommand = require('./src/command/crowdin/split');
 const crowdinPushCommand = require('./src/command/crowdin/push');
 const crowdinPullCommand = require('./src/command/crowdin/pull');
+const crowdinPullRecentCommand = require('./src/command/crowdin/pullRecent');
 const crowdinBranchCommand = require('./src/command/crowdin/branch');
 const crowdinStatusCommand = require('./src/command/crowdin/status');
 const crowdinPreTranslateCommand = require('./src/command/crowdin/preTranslate');
 const crowdinClientCommand = require('./src/command/crowdin/client');
+const crowdinCleanHiddenCommand = require('./src/command/crowdin/cleanHidden');
 
 async function showSpinner(text, callback) {
   const spinner = ora(text);
@@ -165,7 +167,7 @@ program.command("pull")
         await crowdinCollectCommand({
           ...config,
         });
-         console.log('----------------collected----------------');
+        console.log('----------------collected----------------');
       }
 
       await crowdinPullCommand({
@@ -174,6 +176,39 @@ program.command("pull")
         __crowdinArgs: options.crowdinArgs,
         __ignoreLangs: options.ignoreLangs,
         __langs: options.langs
+      });
+    });
+  });
+program.command("pull-recent")
+  .description('download recent translations and split to local project')
+  .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
+  .option('-m, --master', 'only pull master string in branch')
+  .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
+  .action(function (options) {
+    showSpinner('pull-recent', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinPullRecentCommand({
+        ...config,
+        __branch: options.branch,
+        __crowdinArgs: options.crowdinArgs,
+        __master: options.master,
+      });
+    });
+  });
+program.command("clean-hidden")
+  .description('clean hidden strings in current branch')
+  .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
+  .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
+  .action(function (options) {
+    showSpinner('clean-hidden', async function () {
+      const opts = program.opts();
+      const config = parseConf(opts.config);
+
+      await crowdinCleanHiddenCommand({
+        ...config,
+        __branch: options.branch,
       });
     });
   });

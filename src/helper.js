@@ -145,6 +145,16 @@ function checkBranchName(options, branch) {
   return true;
 }
 
+function getCrowdinConfig(options, args) {
+  const crowdinOptions = options.crowdin;
+  const regx = new RegExp(fitRegx(crowdinOptions.argsPlaceholder || ""), "ig");
+  const _args = (args || "").replace(regx, "-");
+  const result = /(-c|--config) (.+?) /.exec(_args);
+  const configPath = result ? result[2] : undefined;
+  return readYaml(configPath || "crowdin.yml");
+}
+
+
 module.exports = {
   traverse: traverse,
   traverseObj: traverseObj,
@@ -155,5 +165,6 @@ module.exports = {
   sortObjectByKey: sortObjectByKey,
   extractSame: extractSame,
   readYaml: readYaml,
-  checkBranchName: checkBranchName
+  checkBranchName: checkBranchName,
+  getCrowdinConfig,
 }

@@ -43,9 +43,6 @@ module.exports = async function (options) {
   });
 
   if (pullCrowdinOptions && pullCrowdinOptions.client) {
-
-
-
     await client(options, "pull", configPath);
   }
 

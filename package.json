@@ -1,6 +1,6 @@
 {
   "name": "viai18n-cli",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -25,10 +25,12 @@
     "c-split": "node index.js c-split -c viai18n.config.js",
     "push": "node index.js push -b master -c viai18n.config.js",
     "pull": "node index.js pull -b master -c viai18n.config.js",
+    "pull-recent": "node index.js pull-recent -b master -c viai18n.config.js",
     "branch-add": "node index.js branch-add test1 -c viai18n.config.js",
     "branch-delete": "node index.js branch-delete test1 -c viai18n.config.js",
     "status": "node index.js status -c viai18n.config.js",
-    "client": "node index.js client -c viai18n.config.js"
+    "client": "node index.js client -c viai18n.config.js",
+    "clean-hidden": "node index.js clean-hidden -b test1 -c viai18n.config.js"
   },
   "bin": {
     "viai18n": "./index.js"

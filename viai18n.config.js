@@ -1,8 +1,11 @@
-const Chinese = require('chinese-s2t')
+const Chinese = require('chinese-s2t');
 module.exports = {
   crowdin: {
     output: "./crowdin/locales",
     argsPlaceholder: "@",
+    pullRecent:{
+      output: "./crowdin/recent",
+    },
     pull: {
       client: false,
     },
