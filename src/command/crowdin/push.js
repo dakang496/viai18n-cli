@@ -3,6 +3,7 @@ const collect = require("./collect");
 const shell = require('shelljs');
 const client = require("./client");
 const helper = require("../../helper");
+const cleanHidden = require("./cleanHidden");
 
 module.exports = async function (options) {
   const branch = options.__branch;
@@ -29,6 +30,10 @@ module.exports = async function (options) {
     shell.exec(`crowdin upload sources ` + args);
   } else {
     shell.exec(`crowdin upload sources -b ${branch}` + args);
+  }
+
+  if(options.__master){
+    await cleanHidden(options);
   }
 
   if (crowdinOptions.push && crowdinOptions.push.client) {

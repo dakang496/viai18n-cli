@@ -1,6 +1,4 @@
 const split = require("./split");
-const shell = require('shelljs');
-const client = require("./client");
 const helper = require("../../helper");
 const fse = require('fs-extra');
 const path = require('path');

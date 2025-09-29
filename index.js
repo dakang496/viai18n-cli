@@ -136,6 +136,7 @@ program.command("c-split")
   });
 program.command("push")
   .description('collect locales and upload to crodwin')
+  .option('-m, --master', 'only master strings')
   .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
   .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
   .action(function (options) {
@@ -146,7 +147,8 @@ program.command("push")
       await crowdinPushCommand({
         ...config,
         __branch: options.branch,
-        __crowdinArgs: options.crowdinArgs
+        __crowdinArgs: options.crowdinArgs,
+        __master: options.master,
       });
     });
   });

@@ -6,7 +6,7 @@ const CrowdinApi = require('@crowdin/crowdin-api-client').default;
 module.exports = async function (options) {
   const branch = options.__branch;
   if (branch === "master") {
-    console.warn("The 'master' branch is not supported.");
+    console.warn("Clean hidden strings in 'master' branch is not supported.");
     return;
   }
 
@@ -20,5 +20,5 @@ module.exports = async function (options) {
     branchName: branch,
   });
 
-  handler.cleanBranchHiddenStrings(branch);
+  await handler.cleanBranchHiddenStrings(branch);
 }
