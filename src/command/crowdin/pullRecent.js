@@ -41,8 +41,15 @@ module.exports = async function (options) {
 
   const files = await handler.fetchBranchAllFiles();
 
-  let updatedTime = Date.now() - 8 * 24 * 60 * 60 * 1000;
-  if (info?.branch === branch && info?.updatedTime) {
+  const msOfDay = 24 * 60 * 60 * 1000;
+  const nowTime = Date.now();
+  let updatedTime = nowTime - 10 * msOfDay;
+  if (options.__days) {
+    const days = parseInt(options.__days, 10);
+    if (!isNaN(days) && days > 0) {
+      updatedTime = nowTime - days * msOfDay;
+    }
+  } else if (info?.branch === branch && info?.updatedTime) {
     updatedTime = info?.updatedTime;
   }
 
@@ -63,7 +70,7 @@ module.exports = async function (options) {
   const newInfo = {
     ...info,
     branch: branch,
-    updatedTime: Date.now(),
+    updatedTime: nowTime,
   }
   fse.outputJsonSync(infoPath, newInfo, { spaces: 2 });
 

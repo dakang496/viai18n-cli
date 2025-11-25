@@ -186,7 +186,7 @@ module.exports = class Handler {
     const filesCroql = this.getFilesCroql(files);
     const rencentCroql = `count of translations where ( updated > '${new Date(updatedTime).toISOString()}' and ( (language != @language:"zh-TW" and count of approvals > 0) or (language = @language:"zh-TW") )) > 0`;
 
-    const onlyMaster = options.onlyMaster || true;
+    const onlyMaster = !!options.onlyMaster;
     let filteredStringItems = [];
     if (!onlyMaster) {
       // 获取所有最近更新的

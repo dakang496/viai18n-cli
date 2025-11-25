@@ -184,18 +184,24 @@ program.command("pull")
 program.command("pull-recent")
   .description('download recent translations and split to local project')
   .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
-  .option('-m, --master', 'only pull master string in branch')
+  .option('--only-master', 'only pull master string in branch')
+  .option('--not-only-master', 'not only pull master string in branch')
+  .option('--days [number]', 'pull recent translations of the last number of days.')
   .requiredOption('-b, --branch <name>', 'specify branch name. eg: master')
   .action(function (options) {
     showSpinner('pull-recent', async function () {
       const opts = program.opts();
       const config = parseConf(opts.config);
 
+      const master = options.onlyMaster ? true : options.notOnlyMaster ? false : true;
+      const days = options.days;
+
       await crowdinPullRecentCommand({
         ...config,
         __branch: options.branch,
         __crowdinArgs: options.crowdinArgs,
-        __master: options.master,
+        __master: master,
+        __days: days,
       });
     });
   });
@@ -283,6 +289,7 @@ program.command("pre-Translate")
 program.command("client")
   .description('call crowdin api by your program')
   .option('-p, --path [name]', 'path of crowdin.yml')
+  .addOption(new program.Option('-a, --arguments <arguments...>', 'arguments of your program'))
   .action(function (options) {
     showSpinner('client', async function () {
       const opts = program.opts();
@@ -290,7 +297,7 @@ program.command("client")
 
       await crowdinClientCommand({
         ...config,
-      }, "client", options.path);
+      }, "client", options.path, options.arguments);
     });
   });
 program

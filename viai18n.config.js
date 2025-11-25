@@ -3,7 +3,7 @@ module.exports = {
   crowdin: {
     output: "./crowdin/locales",
     argsPlaceholder: "@",
-    pullRecent:{
+    pullRecent: {
       output: "./crowdin/recent",
     },
     pull: {
@@ -13,7 +13,7 @@ module.exports = {
       client: true,
     },
     // Api  https://support.crowdin.com/api/v2/#section/Introduction
-    async client(command, options, config, Api) {
+    async client(command, options, config, Api, shelljs) {
       const projectId = config.project_id;
       const api = new Api({
         token: config.api_token
@@ -51,9 +51,9 @@ module.exports = {
   resolve: {
     postfix: '.messages.json', // postfix of i18n file
   },
-  include:{
-    git:{
-      baseBranch:"develop",
+  include: {
+    git: {
+      baseBranch: "develop",
     }
   },
   /** filter something */
