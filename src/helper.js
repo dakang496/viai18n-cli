@@ -131,8 +131,13 @@ function sortObjectByKey(unordered) {
 }
 
 function readYaml(file) {
-  const absolutePath = Path.resolve(file);
-  return yaml.load(fs.readFileSync(absolutePath, 'utf8'));
+  try {
+    const absolutePath = Path.resolve(file);
+    return yaml.load(fs.readFileSync(absolutePath, 'utf8'));
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 function checkBranchName(options, branch) {
