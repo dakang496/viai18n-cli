@@ -24,10 +24,9 @@ module.exports = async function (options) {
   const args = (options.__crowdinArgs || "").replace(regx, "-") || defaultArgs;
 
   const shellCommand = branch === "master" ?
-    `crowdin download translations ` + args :
-    `crowdin download translations -b ${branch} ` + args;
+    `crowdin download ` + args :
+    `crowdin download -b ${branch} ` + args;
 
-  console.log(shellCommand);
   shell.exec(shellCommand);
 
   const parsed = minimist(args.split(' '));
