@@ -1,9 +1,10 @@
 
 const split = require("./split");
-const shell = require('shelljs');
+const shell = require("shelljs");
 const client = require("./client");
 const helper = require("../../helper");
-const CrowdinApi = require('@crowdin/crowdin-api-client').default;
+const CrowdinApi = require("@crowdin/crowdin-api-client").default;
+const minimist = require("minimist");
 
 module.exports = async function (options) {
   const branch = options.__branch;
@@ -22,20 +23,22 @@ module.exports = async function (options) {
   const regx = new RegExp(helper.fitRegx(crowdinOptions.argsPlaceholder || ""), "ig");
   const args = (options.__crowdinArgs || "").replace(regx, "-") || defaultArgs;
 
-  if (branch === "master") {
-    shell.exec(`crowdin download ` + args);
-  } else {
-    shell.exec(`crowdin download -b ${branch} ` + args);
-  }
+  const shellCommand = branch === "master" ?
+    `crowdin download translations ` + args :
+    `crowdin download translations -b ${branch} ` + args;
 
-  const result = /(-c|--config) (.+?) /.exec(args);
-  const configPath = result ? result[2] : undefined
+  console.log(shellCommand);
+  shell.exec(shellCommand);
+
+  const parsed = minimist(args.split(' '));
+  const configPath = parsed.c || parsed.config || "crowdin.yml";
+
 
   const pullCrowdinOptions = crowdinOptions.pull;
 
   if (pullCrowdinOptions && pullCrowdinOptions.beforeSplit) {
-    const config = helper.readYaml(configPath || "crowdin.yml");
-    await pullCrowdinOptions.beforeSplit(options, config, CrowdinApi, shell);
+    const config = helper.readYaml(configPath);
+    await pullCrowdinOptions.beforeSplit(options, config, CrowdinApi, shell, parsed);
   }
 
   await split({
@@ -43,7 +46,7 @@ module.exports = async function (options) {
   });
 
   if (pullCrowdinOptions && pullCrowdinOptions.client) {
-    await client(options, "pull", configPath);
+    await client(options, "pull", configPath, parsed);
   }
 
 }

@@ -155,6 +155,8 @@ program.command("push")
 program.command("pull")
   .description('download translations and split to local project')
   .option('-a, --crowdin-args [text]', 'arguments of crowdin command')
+  .option('--pseudo', 'pull pseudo translations')
+  .option('--flag [text]', 'flag of pull command')
   .addOption(new program.Option('-p, --preprocess', 'carry out preprocess such as collection').default(true))
   .addOption(new program.Option('-i, --ignore-langs <langs...>', 'ignore languages'))
   .addOption(new program.Option('-l, --langs <langs...>', 'valid languages'))
@@ -168,6 +170,7 @@ program.command("pull")
         console.log('----------------collecting----------------');
         await crowdinCollectCommand({
           ...config,
+          include: options.pseudo ? undefined : config.include, // 伪翻译时则范围是全量
         });
         console.log('----------------collected----------------');
       }
@@ -177,7 +180,9 @@ program.command("pull")
         __branch: options.branch,
         __crowdinArgs: options.crowdinArgs,
         __ignoreLangs: options.ignoreLangs,
-        __langs: options.langs
+        __langs: options.langs,
+        __flag: options.flag,
+        __pseudo: options.pseudo,
       });
     });
   });
