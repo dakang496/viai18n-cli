@@ -3,6 +3,9 @@ module.exports = {
   crowdin: {
     output: "./crowdin/locales",
     argsPlaceholder: "@",
+    stringPath(path){ // path eg: pages/test/name 、 pages/test/user.client
+      return path.replace(/\.client(\/|$)/ig, "");
+    },
     pullRecent: {
       output: "./crowdin/recent",
     },

@@ -6,6 +6,7 @@ const Fse = require('fs-extra');
 
 module.exports = async function (options) {
   const crowdinOutput = (options.crowdin && options.crowdin.output) || "./crowdin/locales";
+  const stringPath = options.crowdin && options.crowdin.stringPath;
   const postfix = (options.resolve && options.resolve.postfix) || ".messages.json";
   const baseLang = (options.lang && options.lang.base) || "zh_Hans_CN";
 
@@ -23,8 +24,11 @@ module.exports = async function (options) {
     resolveFiles.forEach((fileItem) => {
       const content = adjustContent(fileItem.content, baseLang, untranslated);
 
-      let contextPath = fileItem.entryName + Path.sep + fileItem.entryName + Path.sep + Path.relative(fileItem.rootPath, fileItem.filePath).replace(postfix, "");
-
+      let mStringPath = fileItem.entryName + Path.sep + Path.relative(fileItem.rootPath, fileItem.filePath).replace(postfix, "");
+      if (stringPath) {
+        mStringPath = stringPath(mStringPath);
+      }
+      const contextPath = fileItem.entryName + Path.sep + mStringPath;
 
       if (!isTranslation) {
         sourceFileMap[baseLang] = sourceFileMap[baseLang] || {};
@@ -59,7 +63,7 @@ function outputFile(filePath, data) {
 }
 
 function pushDataByPath(path, data, root) {
-  if (!data ||Object.keys(data).length === 0) {
+  if (!data || Object.keys(data).length === 0) {
     return;
   }
   const layers = path.split(Path.sep);

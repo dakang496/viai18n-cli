@@ -184,7 +184,7 @@ module.exports = class Handler {
 
   async handleRecentTranslations(files, updatedTime, options = {}) {
     const filesCroql = this.getFilesCroql(files);
-    const rencentCroql = `count of translations where ( updated > '${new Date(updatedTime).toISOString()}' and ( (language != @language:"zh-TW" and count of approvals > 0) or (language = @language:"zh-TW") )) > 0`;
+    const rencentCroql = `count of translations where ( ( updated > '${new Date(updatedTime).toISOString()}' or ( count of approvals where ( added > '${new Date(updatedTime).toISOString()}' ) >0 ) ) and ( (language != @language:"zh-TW" and count of approvals > 0) or (language = @language:"zh-TW") )) > 0`;
 
     const onlyMaster = !!options.onlyMaster;
     let filteredStringItems = [];
